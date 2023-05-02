@@ -8,14 +8,14 @@ export default function routes(app) {
     });
   });
 
-  app.use("/news");
-  app.use("/users");
-  app.use("/auth");
-  app.use("/project");
-  app.use("/budget");
-  app.use("/cv");
-  app.use("/certificate");
-  app.use("/vecancies");
+  // app.use("/news");
+  // app.use("/users");
+  // app.use("/auth");
+  // app.use("/project");
+  // app.use("/budget");
+  // app.use("/cv");
+  // app.use("/certificate");
+  // app.use("/vecancies");
 
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);

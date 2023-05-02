@@ -18,30 +18,31 @@ connect()
       console.log(`Server running at http://localhost:${process.env.PORT}`);
 
       // Connect to MongoDB
-      app.use("/api/v1", routes(app));
+      routes(app);
+      // app.use("/api/v1", routes(app));
     });
 
-    process.on("SIGINT", () => {
-      logger.info("SIGINT signal received: closing HTTP server");
-      server.close(() => {
-        logger.info("HTTP server closed");
-        mongoose.connection.close(false, () => {
-          logger.info("MongoDb connection closed😢");
-          process.exit(0);
-        });
-      });
-    });
+    // process.on("SIGINT", () => {
+    //   logger.info("SIGINT signal received: closing HTTP server");
+    //   server.close(() => {
+    //     logger.info("HTTP server closed");
+    //     mongoose.connection.close(false, () => {
+    //       logger.info("MongoDb connection closed😢");
+    //       process.exit(0);
+    //     });
+    //   });
+    // });
 
-    process.on("SIGTERM", () => {
-      logger.info("SIGTERM signal received: closing HTTP server");
-      server.close(() => {
-        logger.info("HTTP server closed😢");
-        mongoose.connection.close(false, () => {
-          logger.info("MongoDb connection closed😢");
-          process.exit(0);
-        });
-      });
-    });
+    // process.on("SIGTERM", () => {
+    //   logger.info("SIGTERM signal received: closing HTTP server");
+    //   server.close(() => {
+    //     logger.info("HTTP server closed😢");
+    //     mongoose.connection.close(false, () => {
+    //       logger.info("MongoDb connection closed😢");
+    //       process.exit(0);
+    //     });
+    //   });
+    // });
   })
   .catch((err) => {
     console.log(err);
