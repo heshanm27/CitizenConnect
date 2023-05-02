@@ -19,7 +19,6 @@ connect()
 
       // Connect to MongoDB
       routes(app);
-      // app.use("/api/v1", routes(app));
     });
 
     // process.on("SIGINT", () => {

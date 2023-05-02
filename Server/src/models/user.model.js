@@ -11,7 +11,7 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     avatar: { type: String },
-    role: { type: String, enum: ROLES, default: ROLES.USER },
+    role: { type: String, enum: ["user", "admin"], default: "admin" },
   },
   {
     timestamps: true,
@@ -24,7 +24,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.generateJWTToken = function () {
-  return JWT.sign({ id: this._id, role: this.role, firstName: this.firstName, lastName: this.lastName, avatar: this.avatar }, process.env.JWT_SECRET, {
+  return JWT.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
