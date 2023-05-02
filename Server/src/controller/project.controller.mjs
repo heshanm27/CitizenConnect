@@ -1,3 +1,5 @@
+import ProjectService from "../services/project.service.mjs";
+
 export const getProjects = async (req, res) => {};
 
 export const getProject = async (req, res) => {};

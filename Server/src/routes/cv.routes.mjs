@@ -1,5 +1,4 @@
 import express from "express";
-import { addCertificate, deleteCertificate, getCertificate, getCertificates, updateCertificate } from "../controller/certificate.controller.mjs";
 import { addCV, deleteCV, getCV, getCVs, updateCV } from "../controller/cv.controller.mjs";
 
 const Router = express.Router();

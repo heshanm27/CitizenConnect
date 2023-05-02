@@ -1,4 +1,4 @@
-export const getManyNews = async (req, res) => {
+export const getManyNews = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
     const news = await News.find();
     res.status(200).json({

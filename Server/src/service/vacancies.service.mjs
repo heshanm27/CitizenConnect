@@ -1,4 +1,4 @@
-export const getVacancies = async (req, res) => {
+export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
     const vacancies = await Vacancy.find();
     res.status(200).json({

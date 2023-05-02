@@ -1,4 +1,4 @@
-export const getProjects = async (req, res) => {
+export const getProjects = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
     const projects = await Project.find();
     res.status(200).json({

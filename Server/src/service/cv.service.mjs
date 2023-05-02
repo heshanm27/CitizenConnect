@@ -1,4 +1,4 @@
-export const getBudgets = async (req, res) => {
+export const getBudgets = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
     const budgets = await Budget.find();
     res.status(200).json({

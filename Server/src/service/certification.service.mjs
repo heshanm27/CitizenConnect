@@ -1,4 +1,4 @@
-export const getCertificates = async (req, res) => {
+export const getCertificates = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
     const certificates = await Certificate.find();
     res.status(200).json({

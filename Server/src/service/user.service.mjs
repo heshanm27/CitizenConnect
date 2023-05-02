@@ -1,21 +1,6 @@
-export const getUsers = async (req, res) => {};
+export const getUsers = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {};
 
 export const getUser = async (req, res) => {};
-
-export const createUser = async (req, res) => {
-  const user = req.body;
-  const newUser = new User(user);
-  try {
-    await newUser.save();
-    res.status(201).json({
-      newUser,
-    });
-  } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
-  }
-};
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;

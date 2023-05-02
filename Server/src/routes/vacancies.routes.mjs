@@ -1,5 +1,4 @@
 import express from "express";
-import { createNew, deleteNew, getManyNews, getNews, updateNew } from "../controller/news.controller.mjs";
 import { createVacancy, deleteVacancy, getVacancies, getVacancy, updateVacancy } from "../controller/vacancies.controller.mjs";
 
 const Router = express.Router();
