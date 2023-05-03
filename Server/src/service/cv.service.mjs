@@ -1,55 +1,49 @@
-export const getBudgets = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+import { CustomError, BadRequestError } from "../error/index.mjs";
+import CVModel from "../models/cv.model.mjs";
+
+export const getCVS = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    const budgets = await Budget.find();
-    res.status(200).json({
-      budgets,
-    });
+    return await CVModel.find()
+      .sort({ [sortBy]: order })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const getBudget = async (req, res) => {
-  const { id } = req.params;
+export const getCV = async (id) => {
   try {
-    const budget = await Budget.findById(id);
-    res.status(200).json({
-      budget,
-    });
+    const cv = await CVModel.findById(id);
+    if (!cv) {
+      throw new BadRequestError("Budget not found");
+    }
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createBudget = async (req, res) => {
-  const budget = req.body;
-  const newBudget = new Budget(budget);
+export const createCV = async (CV) => {
+  const newCV = new CVModel(CV);
   try {
-    await newBudget.save();
-    res.status(201).json({
-      newBudget,
-    });
+    return await CVModel.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const deleteBudget = async (req, res) => {
-  const { id } = req.params;
+export const deleteCV = async (id) => {
   try {
-    await Budget.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Budget deleted successfully",
-    });
+    await CVModel.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
+  }
+};
+
+export const updateCV = async (id, CV) => {
+  try {
+    return await CVModel.findByIdAndUpdate(id, CV, { new: true });
+  } catch (error) {
+    throw new CustomError(error.message);
   }
 };

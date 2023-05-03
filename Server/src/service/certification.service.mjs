@@ -1,59 +1,52 @@
+import { CustomError, BadRequestError } from "../error/index.mjs";
+import Certificate from "../models/certificate.model.mjs";
+
 export const getCertificates = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    const certificates = await Certificate.find();
-    res.status(200).json({
-      certificates,
-    });
+    return await Certificate.find()
+      .sort({ [sortBy]: order })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const getCertificate = async (req, res) => {
+export const getCertificate = async (id) => {
   try {
+    const certificate = await Certificate.findById(id);
+    if (!certificate) {
+      throw new BadRequestError("Certificate not found");
+    }
+
+    return certificate;
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createCertificate = async (req, res) => {
-  const certificate = req.body;
+export const createCertificate = async (certificate) => {
   const newCertificate = new Certificate(certificate);
   try {
-    await newCertificate.save();
-    res.status(201).json({
-      newCertificate,
-    });
+    return await newCertificate.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
 export const deleteCertificate = async (req, res) => {
   const { id } = req.params;
   try {
-    await Certificate.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Certificate deleted successfully",
-    });
+    return await Certificate.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const updateCertificate = async (req, res) => {
+export const updateCertificate = async (id, data) => {
   try {
+    return await Certificate.findByIdAndUpdate(id, data, { new: true });
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };

@@ -1,8 +1,11 @@
-import BudgetModel from "../models/budget.model";
+import { BadRequestError, CustomError } from "../error/index.mjs";
+import Budget from "../models/budget.model.mjs";
 
 export const getBudgets = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    return await BudgetModel.find()
+    return await Budget.find({
+      title: { $regex: search, $options: "i" },
+    })
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
@@ -11,54 +14,40 @@ export const getBudgets = async ({ search = "", sortBy = "createdAt", order = "-
   }
 };
 
-export const getBudget = async (req, res) => {
+export const getBudget = async (id) => {
   const { id } = req.params;
   try {
     const budget = await Budget.findById(id);
-    res.status(200).json({
-      budget,
-    });
+    if (!budget) {
+      throw new BadRequestError("Budget not found");
+    }
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createBudget = async (req, res) => {
-  const budget = req.body;
+export const createBudget = async (budget) => {
   const newBudget = new Budget(budget);
   try {
-    await newBudget.save();
-    res.status(201).json({
-      newBudget,
-    });
+    return await newBudget.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const deleteBudget = async (req, res) => {
+export const deleteBudget = async (id) => {
   const { id } = req.params;
   try {
-    await Budget.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Budget deleted successfully",
-    });
+    return await Budget.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const updateBudget = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, amount, date } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No budget with id: ${id}`);
-  const updatedBudget = { title, description, amount, date, _id: id };
-  await Budget.findByIdAndUpdate(id, updatedBudget, { new: true });
-  res.json(updatedBudget);
+export const updateBudget = async (id, budget) => {
+  try {
+    return await Budget.findByIdAndUpdate(id, budget, { new: true });
+  } catch (error) {
+    throw new CustomError(error.message);
+  }
 };

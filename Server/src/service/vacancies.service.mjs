@@ -1,62 +1,50 @@
+import vacanciesModel from "../models/vacancies.model";
+import { CustomError, BadRequestError } from "../error/index.mjs";
 export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    const vacancies = await Vacancy.find();
-    res.status(200).json({
-      vacancies,
-    });
+    return await vacanciesModel
+      .find({})
+      .sort({ [sortBy]: order })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const getVacancy = async (req, res) => {
-  const { id } = req.params;
+export const getVacancy = async (id) => {
   try {
-    const vacancy = await Vacancy.findById(id);
-    res.status(200).json({
-      vacancy,
-    });
+    const vacancy = await vacanciesModel.findById(id);
+    if (!vacancy) {
+      throw new BadRequestError("Vacancy not found");
+    }
+    return vacancy;
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createVacancy = async (req, res) => {
-  const vacancy = req.body;
-  const newVacancy = new Vacancy(vacancy);
+export const createVacancy = async (vacancy) => {
+  const newVacancy = new vacanciesModel(vacancy);
   try {
-    await newVacancy.save();
-    res.status(201).json({
-      newVacancy,
-    });
+    return await newVacancy.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const deleteVacancy = async (req, res) => {
-  const { id } = req.params;
+export const deleteVacancy = async (id) => {
   try {
-    await Vacancy.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Vacancy deleted successfully",
-    });
+    return await vacanciesModel.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const updateVacancy = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, salary, location, contract, company, tags, image } = req.body;
+export const updateVacancy = async (id, vacancy) => {
   try {
-  } catch (error) {}
+    return await vacanciesModel.findByIdAndUpdate(id, vacancy, { new: true });
+  } catch (error) {
+    throw new CustomError(error.message);
+  }
 };

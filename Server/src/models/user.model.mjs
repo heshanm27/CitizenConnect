@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
-// import bcrypt from "bcrypt";
-// import JWT from "jsonwebtoken";
-// import { UnAuthorized, BadRequestError } from "../errors";
+import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import JWT from "jsonwebtoken";
+import { UnAuthorized, BadRequestError } from "../error/index.mjs";
 
-const UserSchema = mongoose.Schema(
+const UserSchema = new Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },

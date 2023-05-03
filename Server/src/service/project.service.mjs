@@ -1,63 +1,50 @@
+import Project from "../models/project.model.mjs";
+import { BadRequestError, CustomError } from "../error/index.mjs";
+
 export const getProjects = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    const projects = await Project.find();
-    res.status(200).json({
-      projects,
-    });
+    return await Project.find()
+      .sort({ [sortBy]: order })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const getProject = async (req, res) => {
-  const { id } = req.params;
+export const getProject = async (id) => {
   try {
     const project = await Project.findById(id);
-    res.status(200).json({
-      project,
-    });
+    if (!project) {
+      throw new BadRequestError("Project not found");
+    }
+    return project;
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createProject = async (req, res) => {
-  const project = req.body;
+export const createProject = async (project) => {
   const newProject = new Project(project);
   try {
-    await newProject.save();
-    res.status(201).json({
-      newProject,
-    });
+    return await newProject.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const deleteProject = async (req, res) => {
-  const { id } = req.params;
+export const deleteProject = async (id) => {
   try {
-    await Project.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Project deleted successfully",
-    });
+    return await Project.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const updateProject = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, budget, status, assignedTo, assignedBy, date } = req.body;
-  const updatedProject = { title, description, budget, status, assignedTo, assignedBy, date, _id: id };
-  await Project.findByIdAndUpdate(id, updatedProject, { new: true });
-  res.json(updatedProject);
+export const updateProject = async (id, project) => {
+  try {
+    return await Project.findByIdAndUpdate(id, project, { new: true });
+  } catch (error) {
+    throw new CustomError(error.message);
+  }
 };

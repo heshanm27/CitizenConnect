@@ -1,62 +1,49 @@
+import { CustomError, BadRequestError } from "../error/index.mjs";
+import News from "../models/news.model.mjs";
+
 export const getManyNews = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    const news = await News.find();
-    res.status(200).json({
-      news,
-    });
+    return await News.find()
+      .sort({ [sortBy]: order })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const getOneNews = async (req, res) => {
+export const getOneNews = async (id) => {
   try {
-    const { id } = req.params;
     const news = await News.findById(id);
-    res.status(200).json({
-      news,
-    });
+    if (!news) {
+      throw new BadRequestError("News not found");
+    }
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const createNews = async (req, res) => {
-  const news = req.body;
+export const createNews = async (news) => {
   const newNews = new News(news);
   try {
-    await newNews.save();
-    res.status(201).json({
-      newNews,
-    });
+    return await newNews.save();
   } catch (error) {
-    res.status(409).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };
 
-export const updateNews = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, content, author, image } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No news with id: ${id}`);
-  const updatedNews = { title, description, content, author, image, _id: id };
+export const updateNews = async (id, news) => {
+  try {
+    return await News.findByIdAndUpdate(id, news, { new: true });
+  } catch (error) {
+    throw new CustomError(error.message);
+  }
 };
 
-export const deleteNews = async (req, res) => {
-  const { id } = req.params;
+export const deleteNews = async (id) => {
   try {
-    await News.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "News deleted successfully",
-    });
+    return await News.findByIdAndDelete(id);
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    throw new CustomError(error.message);
   }
 };

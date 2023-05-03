@@ -1,10 +1,10 @@
 import express from "express";
-import { createNew, deleteNew, getManyNews, getNews, updateNew } from "../controller/news.controller.mjs";
+import { createNews, deleteNew, getManyNews, getNews, updateNew } from "../controller/news.controller.mjs";
 
 const Router = express.Router();
 
 //default routes
-Router.route("/").get(getManyNews).post(createNew);
+Router.route("/").get(getManyNews).post(createNews);
 //paramterized routes
 Router.route("/:id").get(getNews).patch(updateNew).delete(deleteNew);
 

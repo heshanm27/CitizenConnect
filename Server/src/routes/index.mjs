@@ -4,9 +4,9 @@ import AuthRoute from "./auth.routes.mjs";
 // import BudgetRoute from "./budget.routes.mjs";
 // import CertificateRoute from "./certificate.routes.mjs";
 // import CvRoute from "./cv.routes.mjs";
-// import NewsRoute from "./news.routes.mjs";
+import NewsRoute from "./news.routes.mjs";
 // import ProjectRoute from "./project.routes.mjs";
-import UserRoute from "./user.routes.mjs";
+// import UserRoute from "./user.routes.mjs";
 // import VacanciesRoute from "./vacancies.routes.mjs";
 
 export default function routes(app) {
@@ -17,8 +17,8 @@ export default function routes(app) {
       server: "Server Is running",
     });
   });
-  // app.use(`${basePath}/news`, NewsRoute);
-  app.use(`${basePath}/users`, UserRoute);
+  app.use(`${basePath}/news`, NewsRoute);
+  // app.use(`${basePath}/users`, UserRoute);
   app.use(`${basePath}/auth`, AuthRoute);
   // app.use(`${basePath}/project`, ProjectRoute);
   // app.use(`${basePath}/budget`, BudgetRoute);
