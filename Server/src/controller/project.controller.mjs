@@ -20,20 +20,21 @@ export const getProject = async (req, res) => {
 
 export const createProject = async (req, res) => {
   try {
-    let projectData = req.body;
-    CLOUDINARY.image(
-      req.file.path,
-      {
-        folder: "projects",
-        use_filename: true,
-        unique_filename: false,
-      },
-      async (err, result) => {
-        if (err) return res.status(500).json({ message: err.message });
-        projectData = await ProjectService.create({ ...req.body, thumbnail: result.secure_url });
-      }
-    );
-    const project = await ProjectService.create(req.body);
+    console.log(req.body);
+    // let projectData = req.body;
+    // CLOUDINARY.image(
+    //   req.file.path,
+    //   {
+    //     folder: "projects",
+    //     use_filename: true,
+    //     unique_filename: false,
+    //   },
+    //   async (err, result) => {
+    //     if (err) return res.status(500).json({ message: err.message });
+    //     projectData = await ProjectService.create({ ...req.body, thumbnail: result.secure_url });
+    //   }
+    // );
+    // const project = await ProjectService.create(req.body);
     res.status(201).json(project);
   } catch (error) {
     res.status(409).json({ message: error.message });
