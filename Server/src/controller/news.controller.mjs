@@ -1,4 +1,4 @@
-import NewsService from "../services/news.service.js";
+import * as NewsService from "../service/news.service.mjs";
 
 export const getManyNews = async (req, res) => {
   try {
