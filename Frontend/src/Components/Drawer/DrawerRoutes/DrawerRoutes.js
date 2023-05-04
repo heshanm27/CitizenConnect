@@ -13,26 +13,32 @@ import { createElement } from "react";
 
 export const ADMIN_ROUTES = [
   {
-    path: "/admin/orders/live",
-    name: "Live Orders",
+    path: "/admin/budget",
+    name: "Project Budget",
     icon: createElement(WorkHistoryOutlinedIcon),
     activeIcon: createElement(WorkHistoryIcon),
   },
   {
-    path: "/admin/orders/history",
-    name: "Order History",
+    path: "/admin/document",
+    name: "Document Requested",
     icon: createElement(ShoppingBagOutlinedIcon),
     activeIcon: createElement(ShoppingBagIcon),
   },
   {
-    path: "/admin/categories",
-    name: "Categories",
+    path: "/admin/vacancies",
+    name: "Vacancies",
     icon: createElement(CategoryOutlinedIcon),
     activeIcon: createElement(CategoryIcon),
   },
   {
-    path: "/admin/usermangment",
-    name: "User Management",
+    path: "/admin/news",
+    name: "News",
+    icon: createElement(ManageAccountsOutlinedIcon),
+    activeIcon: createElement(ManageAccountsIcon),
+  },
+  {
+    path: "/admin/vacancies/cv",
+    name: "Received CV ",
     icon: createElement(ManageAccountsOutlinedIcon),
     activeIcon: createElement(ManageAccountsIcon),
   },

@@ -6,39 +6,31 @@ import AppBar from "@mui/material/AppBar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import SegmentIcon from "@mui/icons-material/Segment";
-import { Avatar, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
+import { Avatar, Container, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
-import CustomLink from "./custom-link/custom-link";
+import CustomLink from "./CustomLinks/CustomLinks";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { green } from "@mui/material/colors";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { ADMIN_ROUTES, SELLER_ROUTES, USER_ROUTES } from "./link-routes/link-Routes";
+import { ADMIN_ROUTES } from "./DrawerRoutes/DrawerRoutes.js";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { useAppDispatch, useAppSelector } from "../../redux/redux-hooks";
-import NavBarMenu from "../common/NavBarMenu/NavBarMenu";
 import { Logout } from "@mui/icons-material";
-import { logOut } from "../../redux/auth/authslice";
+
 import HomeIcon from "@mui/icons-material/Home";
+import { useDispatch } from "react-redux";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 
-const menuItems = [
-  {
-    text: "Profile",
-    url: "/",
-    icon: <SegmentIcon />,
-  },
-];
 export default function CustomDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const { role, avatar, firstName } = useAppSelector((state) => state.authSlice);
+  // const { role, avatar, firstName } = useAppSelector((state) => state.authSlice);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleDrawerClose = () => {
     setOpen(!open);
   };
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const menuOpen = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -48,7 +40,7 @@ export default function CustomDrawer() {
   const handleClose = (state) => {
     switch (state) {
       case "Logout":
-        dispatch(logOut("logout"));
+        // dispatch(logOut("logout"));
         navigate("/signin", { replace: true });
         setAnchorEl(null);
         return;
@@ -75,6 +67,8 @@ export default function CustomDrawer() {
           elevation={0}
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
+            borderBottom: 1,
+            borderColor: "#eeeeee",
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
             mb: theme.mixins.toolbar,
@@ -87,14 +81,14 @@ export default function CustomDrawer() {
           <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} sx={{ p: 1 }}>
             {!open ? (
               <Typography variant="h6" noWrap component="div">
-                NatureAyur
+                Citizen Connect
               </Typography>
             ) : (
               <div></div>
             )}
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-              <Avatar alt="Remy Sharp" src={avatar} />
-              <Typography>{firstName}</Typography>
+              <Avatar alt="Remy Sharp" />
+              {/* <Typography>{firstName}</Typography> */}
               <IconButton aria-label="delete" onClick={handleClick}>
                 <KeyboardArrowDownIcon />
               </IconButton>
@@ -107,7 +101,8 @@ export default function CustomDrawer() {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: open ? drawerWidth : drawerWidthClose,
-              border: 0,
+              border: 1,
+              borderColor: "#eeeeee",
               boxSizing: "border-box",
               transition: theme.transitions.create("width", {
                 easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
@@ -141,22 +136,9 @@ export default function CustomDrawer() {
           </Box>
           <Box sx={{ mt: 5 }}>
             <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", flexGrow: 1 }}>
-              {(() => {
-                let routes;
-                switch (role) {
-                  case "admin":
-                    routes = ADMIN_ROUTES;
-                    break;
-                  case "seller":
-                    routes = SELLER_ROUTES;
-                    break;
-                  default:
-                    routes = USER_ROUTES;
-                }
-                return routes.map((item, index) => (
-                  <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />
-                ));
-              })()}
+              {ADMIN_ROUTES.map((item, index) => (
+                <CustomLink drawerStatus={open} label={item.name} path={item.path} activeIcon={item.activeIcon} key={item.path} icon={item.icon} />
+              ))}
 
               <Box sx={{ flexGrow: 1 }}></Box>
               <CustomLink drawerStatus={open} label={"Logout"} path={"/logout"} activeIcon={<LogoutIcon />} key={"logout"} icon={<LogoutOutlinedIcon />} />
@@ -175,7 +157,9 @@ export default function CustomDrawer() {
             borderTopRightRadius: 0,
           }}
         >
-          <Outlet />
+          <Container maxWidth="xl" sx={{ mt: 2 }}>
+            <Outlet />
+          </Container>
         </Box>
       </Box>
       <Menu
