@@ -15,6 +15,18 @@ export const getVacancies = async ({ search = "", sortBy = "createdAt", order = 
 //getting vacancy details
 
 
+export const getVacancy = async (id) => {
+  try {
+    const vacancy = await vacanciesModel.findById(id);
+    if (!vacancy) {
+      throw new BadRequestError("Vacancy not found");
+    }
+    return vacancy;
+  } catch (error) {
+    throw new CustomError(error.message);
+  }
+};
+
 //creating vacancy
 
 export const createVacancy = async (vacancy) => {
