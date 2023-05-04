@@ -26,34 +26,3 @@ export const getVacancy = async (id) => {
     throw new CustomError(error.message);
   }
 };
-
-//creating vacancy
-
-export const createVacancy = async (vacancy) => {
-  const newVacancy = new vacanciesModel(vacancy);
-  try {
-    return await newVacancy.save();
-  } catch (error) {
-    throw new CustomError(error.message);
-  }
-};
-
-//deleting vacancy
-
-export const deleteVacancy = async (id) => {
-  try {
-    return await vacanciesModel.findByIdAndDelete(id);
-  } catch (error) {
-    throw new CustomError(error.message);
-  }
-};
-
-//updating vacancy
-
-export const updateVacancy = async (id, vacancy) => {
-  try {
-    return await vacanciesModel.findByIdAndUpdate(id, vacancy, { new: true });
-  } catch (error) {
-    throw new CustomError(error.message);
-  }
-};
