@@ -22,7 +22,7 @@ import { useState } from "react";
 
 const cards = [1, 2, 3, 4, 5, 7, 8, 9];
 
-export default function News() {
+export default function Vacancies() {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
   const handleClick = () => {
@@ -36,20 +36,24 @@ export default function News() {
       <Navbar />
       <main>
         {/* Hero unit */}
-
-        <Container maxWidth="lg">
-          <Typography component="h1" variant="h2" align="center" color="text.primary" gutterBottom>
-            Avaliable Vacancies
-          </Typography>
-          <Typography variant="body" align="center" color="text.secondary" paragraph>
-            The Vacancies process typically begins with identifying the need for a new position and creating a job description outlining the required
-            qualifications and experience. This job description is then advertised on the government information site and other relevant job boards to attract
-            suitable candidates. Once the application deadline has passed, the applications are screened by a team to ensure they meet the required
-            qualifications and experience. Shortlisted candidates are then invited for an interview or other selection procedures such as written tests, group
-            discussions or presentations.
-          </Typography>
-        </Container>
-
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+          }}
+        >
+          <Container maxWidth="lg">
+            <Typography component="h1" variant="h2" align="center" color="text.primary" gutterBottom>
+              Avaliable Vacancies
+            </Typography>
+            <Typography variant="body" align="center" color="text.secondary" paragraph>
+              The Vacancies process typically begins with identifying the need for a new position and creating a job description outlining the required
+              qualifications and experience. This job description is then advertised on the government information site and other relevant job boards to attract
+              suitable candidates. Once the application deadline has passed, the applications are screened by a team to ensure they meet the required
+              qualifications and experience. Shortlisted candidates are then invited for an interview or other selection procedures such as written tests, group
+              discussions or presentations.
+            </Typography>
+          </Container>
+        </Box>
         <Container maxWidth="lg">
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
