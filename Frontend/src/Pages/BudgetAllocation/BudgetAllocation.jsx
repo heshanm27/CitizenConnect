@@ -14,8 +14,8 @@ import { Button, Card, CardActions, CardContent, CardMedia, Grid, Pagination, St
 import { useQuery } from "@tanstack/react-query";
 import { getBudgets } from "../../Api/budget.api";
 import { getProjects } from "../../Api/project.api";
-
-const cards = [1, 2, 3, 4, 5, 7, 8, 9];
+import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
+import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
 
 export default function Budgets() {
   const [open, setOpen] = useState(true);
@@ -102,24 +102,20 @@ export default function Budgets() {
 
           <Box sx={{ mt: 5 }}>
             <Typography variant="h4" align="left" color="text.primary" sx={{ my: 5 }}>
-              Our Projects In {selectedData?.year}
+              {projectData?.projetData.length == 0 ? null : `Our Projects In ${selectedData?.year}`}
             </Typography>
             <Grid container spacing={4}>
+              {isLoading ||
+                (isprojectsLoad &&
+                  [1, 2, 3, 4, 5, 6].map((item) => (
+                    <Grid item key={item} xs={12} sm={6} md={4}>
+                      <SkeltonCard />
+                    </Grid>
+                  )))}
+              {projectData?.projetData.length == 0 ? <NoProject /> : null}
               {projectData?.projetData.map((card) => (
                 <Grid item key={card} xs={12} sm={6} md={4}>
-                  <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                    <CardMedia component="img" image="https://source.unsplash.com/random" alt="random" />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Heading
-                      </Typography>
-                      <Typography>This is a media card. You can use this section to describe the content.</Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">View</Button>
-                      <Button size="small">Edit</Button>
-                    </CardActions>
-                  </Card>
+                  <ProjectCard />
                 </Grid>
               ))}
               <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
@@ -138,5 +134,15 @@ export default function Budgets() {
       </main>
       <Footer />
     </>
+  );
+}
+
+function NoProject() {
+  return (
+    <Stack sx={{ width: "100%", height: "40vh", my: 5 }}>
+      <Typography variant="h4" align="center">
+        No Project to Show
+      </Typography>
+    </Stack>
   );
 }

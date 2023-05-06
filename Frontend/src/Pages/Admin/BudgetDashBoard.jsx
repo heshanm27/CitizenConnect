@@ -151,7 +151,7 @@ export default function BudgetDashBoard() {
         />
         <CustomSnackBar notify={notify} setNotify={setNotify} />
         <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Budget"}>
-          <BudgetForm />
+          <BudgetForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
         </CustomeDialog>
       </Container>
     </>

@@ -1,11 +1,28 @@
-import { Box, Container, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
-export default function BudgetForm() {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createBudget } from "../../Api/budget.api";
+export default function BudgetForm({ setNotify, setDialogOff }) {
   const [richText, setRichText] = useState("");
   const editorRef = useRef(null);
+  const queryClient = useQueryClient();
   const years = [];
   for (let year = new Date().getFullYear(); year >= 1950; year--) {
     years.push(year);
@@ -15,46 +32,62 @@ export default function BudgetForm() {
       setRichText(editorRef.current.getContent());
     }
   };
+
+  const { isLoading, isError, error, mutate } = useMutation({
+    mutationFn: createBudget,
+    onSuccess: (value) => {
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-budgets"]);
+    },
+  });
   const validationSchema = Yup.object().shape({
-    spended_budget: Yup.string().required("Product Brand is required"),
-    allocated_budget: Yup.number().required("Product Price is required").min(1, "Minimum value is 1").max(100000, "Maximum value is 100000"),
-    unit: Yup.number().required("Product Quantity is required").min(1, "Minimum value is 0").max(10000, "Maximum value is 10000"),
-    description: Yup.string().required("Product Name is required"),
+    year: Yup.string().required("Year is required"),
+    allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
+    spended_budget: Yup.number().required("Spended Budgetis required").min(1, "Minimum value is 1"),
+    unit: Yup.string().required("Unit is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      productName: "",
-      productBrand: "",
-      productPrice: 1,
-      productQuantity: 1,
-      mainCategory: "",
-      subCategory: [],
+      year: "",
+      allocated_budget: 1,
+      spended_budget: 1,
+      unit: "",
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(selectedFiles);
-      productMutatuion.mutate({
-        name: values.productName,
-        price: values.productPrice,
-        stock: values.productQuantity,
-        category: values.mainCategory,
-        subCategory: values.subCategory,
+      mutate({
+        year: values.year,
+        allocated_budget: values.allocated_budget,
+        spended_budget: values.spended_budget,
+        unit: values.unit,
         description: richText,
-        images: selectedFiles,
-        brand: values.productBrand,
+      });
+      console.log({
+        year: values.year,
+        allocated_budget: values.allocated_budget,
+        spended_budget: values.spended_budget,
+        unit: values.unit,
+        description: richText,
       });
     },
   });
   return (
     <Container maxWidth="lg">
-      <Stack direction={"column"} spacing={2}>
+      <Stack direction={"column"} spacing={3}>
         <Box>
           <InputLabel sx={{ my: 2 }} required id="demo-simple-select-label">
             Budget Year
           </InputLabel>
           <FormControl fullWidth>
             <Select
+              name="year"
               MenuProps={{
                 PaperProps: {
                   style: {
@@ -63,8 +96,13 @@ export default function BudgetForm() {
                 },
               }}
               displayEmpty
-              value={""}
-              onChange={""}
+              error={Boolean(errors.year)}
+              value={values.year}
+              onBlur={handleBlur}
+              //   onChange={(option) => {
+              //     setFieldValue("year", option.value);
+              //   }}
+              onChange={handleChange}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -75,30 +113,66 @@ export default function BudgetForm() {
                 </MenuItem>
               ))}
             </Select>
+            <FormHelperText error={Boolean(errors.year)}>{errors.year ? errors.year : "Enter budget year"}</FormHelperText>
           </FormControl>
         </Box>
         <InputLabel sx={{ mb: 2 }} required id="demo-simple-select-label">
           Allocated Budget
         </InputLabel>
-        <TextField />
+        <TextField
+          name="allocated_budget"
+          type="number"
+          fullWidth
+          inputProps={{ min: 1 }}
+          error={Boolean(errors.allocated_budget)}
+          value={values.allocated_budget}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          helperText={errors.allocated_budget}
+        />
         <Box>
           <InputLabel sx={{ mb: 2 }} required id="demo-simple-select-label">
             Spended Budget
           </InputLabel>
-          <TextField fullWidth />
+          <TextField
+            name="spended_budget"
+            type="number"
+            fullWidth
+            inputProps={{ min: 1 }}
+            error={Boolean(errors.spended_budget)}
+            value={values.spended_budget}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={errors.spended_budget}
+          />
         </Box>
         <InputLabel sx={{ my: 2 }} required id="demo-simple-select-label">
           Unit
         </InputLabel>
         <FormControl fullWidth>
-          <Select displayEmpty labelId="demo-simple-select-label" id="demo-simple-select" value={""} onChange={""}>
-            <MenuItem value="million">thousand</MenuItem>
+          <Select
+            name="unit"
+            displayEmpty
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            error={Boolean(errors.unit)}
+            value={values.unit}
+            onBlur={handleBlur}
+            // onChange={(option) => {
+            //   setFieldValue("unit", option.value);
+            // }}
+            onChange={handleChange}
+          >
+            <MenuItem value="thousand">thousand</MenuItem>
             <MenuItem value="million">million</MenuItem>
-            <MenuItem value="million">billion</MenuItem>
+            <MenuItem value="billion">billion</MenuItem>
           </Select>
+          <FormHelperText sx={{ mt: 2 }} error={Boolean(errors.unit)}>
+            {errors.unit ? errors.unit : "Enter what unit you used to enter Allocated Budget & Spended Budget"}{" "}
+          </FormHelperText>
         </FormControl>
 
-        <Box>
+        <Box sx={{ mb: 5 }}>
           <Typography sx={{ mb: 2 }}>Budget Description</Typography>
           <Editor
             onInit={(evt, editor) => (editorRef.current = editor)}
@@ -137,6 +211,14 @@ export default function BudgetForm() {
             }}
           />
         </Box>
+        {isError && (
+          <Typography align="center" color="red">
+            {error.message}
+          </Typography>
+        )}
+        <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
+          {isLoading ? <CircularProgress /> : " Submit"}
+        </Button>
       </Stack>
     </Container>
   );
