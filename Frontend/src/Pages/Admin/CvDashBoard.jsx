@@ -5,31 +5,37 @@ import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { getCVs } from "../../Api/cv.api";
 export default function CvDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-cv"], queryFn: getCVs });
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "year", //access nested data with dot notation
-        header: "#Year",
-        enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year).getFullYear();
-        },
+        accessorFn: (row) => row.first_name + " " + row.last_name, //access nested data with dot notation
+        header: "Candidate Name",
+        enableGlobalFilter: true,
       },
       {
-        accessorKey: "allocated_budget", //normal accessorKey
-        header: "Allocated Budget",
+        accessorKey: "email", //normal accessorKey
+        header: "Candidate Email",
         Cell: ({ renderedCellValue, row }) => {
           return "$" + row.original.allocated_budget + " " + row.original.unit;
         },
       },
       {
-        accessorKey: "spended_budget", //normal accessorKey
-        header: "Spended Budget",
+        accessorKey: "nic_passport", //normal accessorKey
+        header: "Candidate NIC/PASSPORT",
         Cell: ({ renderedCellValue, row }) => {
           return "$" + row.original.spended_budget + " " + row.original.unit;
+        },
+      },
+      {
+        accessorKey: "dob", //access nested data with dot notation
+        header: "DOB",
+        enableGlobalFilter: false,
+        Cell: ({ renderedCellValue, row }) => {
+          return new Date(row.original.dob).getFullYear();
         },
       },
     ],

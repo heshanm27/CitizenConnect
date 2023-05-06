@@ -11,7 +11,6 @@ const CertificateSchema = new Schema(
     place_of_birth: { type: String },
     number_of_copy: { type: Number, default: 1 },
     certificate_type: { type: String, required: true },
-    certificate_purpose: { type: String, required: true },
     certificate_language: { type: String, required: true },
     payment: {
       ispaid: { type: Boolean, default: false },

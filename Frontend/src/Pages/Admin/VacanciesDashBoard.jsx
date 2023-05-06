@@ -10,6 +10,7 @@ import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 import VacanciesForm from "../../Components/Form/VacanciesForm";
+import { getVacancies } from "../../Api/vacancies.api";
 export default function VacanciesDashBoard() {
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -48,7 +49,7 @@ export default function VacanciesDashBoard() {
       });
     },
   });
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-vacancies"], queryFn: getVacancies });
 
   const handleDelete = () => {
     mutate(docID);
@@ -57,26 +58,28 @@ export default function VacanciesDashBoard() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "year", //access nested data with dot notation
-        header: "#Year",
+        accessorKey: "title", //normal accessorKey
+        header: "Vacancie Title",
+        enableGlobalFilter: false,
+      },
+      {
+        accessorKey: "closing_date", //access nested data with dot notation
+        header: "Vacancie Closing Date ",
         enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => {
           return new Date(row.original.year).getFullYear();
         },
       },
+
       {
-        accessorKey: "allocated_budget", //normal accessorKey
-        header: "Allocated Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.allocated_budget + " " + row.original.unit;
-        },
+        accessorKey: "responses", //normal accessorKey
+        header: "Vacancie Responses Count",
+        enableGlobalFilter: false,
       },
       {
-        accessorKey: "spended_budget", //normal accessorKey
-        header: "Spended Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.spended_budget + " " + row.original.unit;
-        },
+        accessorKey: "short_description", //normal accessorKey
+        header: "Vacancie Short Description",
+        enableGlobalFilter: false,
       },
     ],
     []

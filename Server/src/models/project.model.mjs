@@ -9,7 +9,7 @@ const ProjectSchema = new Schema(
     project_owner: { type: String, required: true },
     year_of_allocation: { type: String, required: true },
     description: { type: String, default: false },
-    thumbnail: { type: String },
+    thumbnail: { type: String, default: "https://source.unsplash.com/random" },
   },
   {
     timestamps: true,

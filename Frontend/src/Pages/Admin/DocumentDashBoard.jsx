@@ -5,32 +5,38 @@ import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { getCertificates } from "../../Api/certificate.api";
 export default function DocumentDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-document"], queryFn: getCertificates });
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "year", //access nested data with dot notation
-        header: "#Year",
+        accessorFn: (row) => row.fname + " " + row.lname, //access nested data with dot notation
+        header: "Customer Name",
+        enableGlobalFilter: true,
+      },
+      {
+        accessorKey: "email", //access nested data with dot notation
+        header: "Email",
         enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year).getFullYear();
-        },
       },
       {
-        accessorKey: "allocated_budget", //normal accessorKey
-        header: "Allocated Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.allocated_budget + " " + row.original.unit;
-        },
+        accessorKey: "certificate_type", //normal accessorKey
+        header: "Certificate Type",
+        enableGlobalFilter: false,
       },
+
       {
-        accessorKey: "spended_budget", //normal accessorKey
-        header: "Spended Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.spended_budget + " " + row.original.unit;
-        },
+        accessorKey: "certificate_language", //normal accessorKey
+        header: "Certificate Language",
+        enableGlobalFilter: false,
+      },
+
+      {
+        accessorKey: "number_of_copy", //normal accessorKey
+        header: "Number Of Copy",
+        enableGlobalFilter: false,
       },
     ],
     []

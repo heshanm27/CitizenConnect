@@ -9,6 +9,7 @@ import NewsForm from "../../Components/Form/NewsForm";
 import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import { getNews } from "../../Api/news.api";
 
 export default function NewsDashBoard() {
   const theme = useTheme();
@@ -22,7 +23,7 @@ export default function NewsDashBoard() {
     type: "error",
     title: "",
   });
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-news"], queryFn: getNews });
   const {
     isLoading: deleteLoading,
     error: deleteError,
@@ -52,26 +53,19 @@ export default function NewsDashBoard() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "year", //access nested data with dot notation
-        header: "#Year",
+        accessorKey: "title", //normal accessorKey
+        header: "News title",
         enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year).getFullYear();
-        },
       },
       {
-        accessorKey: "allocated_budget", //normal accessorKey
-        header: "Allocated Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.allocated_budget + " " + row.original.unit;
-        },
+        accessorKey: "short_description", //normal accessorKey
+        header: "News Short Description",
+        enableGlobalFilter: false,
       },
       {
-        accessorKey: "spended_budget", //normal accessorKey
-        header: "Spended Budget",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.spended_budget + " " + row.original.unit;
-        },
+        accessorKey: "news_type", //normal accessorKey
+        header: "News Types",
+        enableGlobalFilter: false,
       },
     ],
     []

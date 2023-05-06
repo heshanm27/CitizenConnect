@@ -1,4 +1,19 @@
-import { Box, Button, CircularProgress, Container, Grid, Stack, TextField, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -10,24 +25,23 @@ import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
-export default function ProjectForm() {
+export default function ProjectForm({ setNotify, setDialogOff }) {
   const theme = useTheme();
   const [richText, setRichText] = useState("");
   const dropzoneRef = useRef(null);
   const editorRef = useRef(null);
   const queryClient = useQueryClient();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "error",
-    title: "",
-  });
+  const years = [];
+  for (let year = new Date().getFullYear(); year >= 1950; year--) {
+    years.push(year);
+  }
+
   const { getRootProps, getInputProps, fileRejections, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
     maxFiles: 1,
     multiple: true,
-    accept: { "image/jpeg": [".jpeg", ".png"], "application/pdf": [".pdf"] },
+    accept: { "image/jpeg": [".jpeg", ".png"] },
     maxSize: 1000000,
   });
 
@@ -67,7 +81,9 @@ export default function ProjectForm() {
     },
   });
   const validationSchema = Yup.object().shape({
-    year: Yup.string().required("Year is required"),
+    title: Yup.string().required("Title is required"),
+    year_of_allocation: Yup.string().required("Allocation year is required"),
+    project_owner: Yup.string().required("Project Owner is required"),
     allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
     spended_budget: Yup.number().required("Spended Budgetis required").min(1, "Minimum value is 1"),
     unit: Yup.string().required("Unit is required"),
@@ -75,134 +91,143 @@ export default function ProjectForm() {
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      nic_passport: "",
-      dob: "",
-      address: "",
-      email: "",
-      phone: "",
-      coverletter: "",
+      title: "",
+      year_of_allocation: "",
+      project_owner: "",
+      allocated_budget: "",
+      spended_budget: "",
+      unit: "",
     },
     validationSchema,
     onSubmit: (values) => {
       mutate({
-        year: values.year,
+        title: values.title,
         allocated_budget: values.allocated_budget,
         spended_budget: values.spended_budget,
         unit: values.unit,
+        project_owner: values.project_owner,
         description: richText,
-      });
-      console.log({
-        year: values.year,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        description: richText,
+        thumbnail: selectedFiles,
       });
     },
   });
   return (
     <>
-      <Navbar />
       <Container maxWidth="lg">
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} spacing={2}>
             <TextField
               sx={{ my: 3 }}
-              name="first_name"
-              label="First Name"
+              name="title"
+              label="Project Title"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.title)}
+              value={values.title}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.title}
             />
 
-            <TextField
-              sx={{ my: 3 }}
-              name="nic_passport"
-              label="NIC/PASSPORT"
-              fullWidth
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
+            <Box>
+              <InputLabel sx={{ my: 2 }} required id="demo-simple-select-label">
+                Budget Year
+              </InputLabel>
+              <FormControl fullWidth>
+                <Select
+                  name="year"
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300, // adjust the maxHeight to suit your needs
+                      },
+                    },
+                  }}
+                  displayEmpty
+                  error={Boolean(errors.year)}
+                  value={values.year}
+                  onBlur={handleBlur}
+                  //   onChange={(option) => {
+                  //     setFieldValue("year", option.value);
+                  //   }}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {years.map((year) => (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error={Boolean(errors.year)}>{errors.year ? errors.year : "Enter budget year"}</FormHelperText>
+              </FormControl>
+            </Box>
 
-            <TextField
-              sx={{ my: 3 }}
-              name="email"
-              label="Address"
-              fullWidth
-              multiline
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              sx={{ my: 3 }}
-              name="last_name"
-              label="Last Name"
-              fullWidth
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
-
-            <TextField
-              sx={{ my: 3 }}
-              name="email"
-              label="Email"
-              fullWidth
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
-
-            <TextField
-              sx={{ my: 3 }}
-              name="email"
-              label="Phone NO"
-              fullWidth
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
-            <TextField
-              sx={{ my: 2 }}
-              name="email"
-              label="Date of Birth"
-              fullWidth
-              multiline
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
+            <InputLabel sx={{ my: 2 }} required id="demo-simple-select-label">
+              Unit
+            </InputLabel>
+            <FormControl fullWidth>
+              <Select
+                name="unit"
+                displayEmpty
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                error={Boolean(errors.unit)}
+                value={values.unit}
+                onBlur={handleBlur}
+                // onChange={(option) => {
+                //   setFieldValue("unit", option.value);
+                // }}
+                onChange={handleChange}
+              >
+                <MenuItem value="thousand">thousand</MenuItem>
+                <MenuItem value="million">million</MenuItem>
+                <MenuItem value="billion">billion</MenuItem>
+              </Select>
+              <FormHelperText sx={{ mt: 2 }} error={Boolean(errors.unit)}>
+                {errors.unit ? errors.unit : "Enter what unit you used to enter Allocated Budget & Spended Budget"}{" "}
+              </FormHelperText>
+            </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} spacing={2}>
+            <Box>
+              <InputLabel sx={{ mb: 2 }} required id="demo-simple-select-label">
+                Allocated Budget
+              </InputLabel>
+              <TextField
+                name="allocated_budget"
+                type="number"
+                fullWidth
+                inputProps={{ min: 1 }}
+                error={Boolean(errors.allocated_budget)}
+                value={values.allocated_budget}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={errors.allocated_budget}
+              />
+            </Box>
+            <Box sx={{ my: 3 }}>
+              <InputLabel sx={{ mb: 2 }} required id="demo-simple-select-label">
+                Spended Budget
+              </InputLabel>
+              <TextField
+                name="spended_budget"
+                type="number"
+                fullWidth
+                inputProps={{ min: 1 }}
+                error={Boolean(errors.spended_budget)}
+                value={values.spended_budget}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={errors.spended_budget}
+              />
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} md={12}>
             <Box sx={{ mb: 5 }}>
               <Typography sx={{ mb: 2 }}>Cover Letter</Typography>
               <Editor
@@ -243,7 +268,7 @@ export default function ProjectForm() {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <Typography sx={{ mb: 2 }}>Upload CV</Typography>
             <Box
               sx={{
@@ -294,9 +319,6 @@ export default function ProjectForm() {
             </Button>
           </Grid>
         </Grid>
-
-        <Footer />
-        <CustomSnackBar notify={notify} setNotify={setNotify} />
       </Container>
     </>
   );

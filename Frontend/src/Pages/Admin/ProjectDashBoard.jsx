@@ -156,7 +156,7 @@ export default function ProjectDashBoard() {
           title={"Delete"}
         />
         <CustomSnackBar notify={notify} setNotify={setNotify} />
-        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add News"}>
+        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Project"}>
           <ProjectForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
         </CustomeDialog>
       </Container>
