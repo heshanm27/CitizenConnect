@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-export default function NewsDashBoard() {
+import ArticleIcon from "@mui/icons-material/Article";
+export default function VacanciesDashBoard() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
@@ -39,7 +40,7 @@ export default function NewsDashBoard() {
     <>
       <Container maxWidth="xl">
         <Typography variant="h3" sx={{ my: 5, fontWeight: "bold" }}>
-          News
+          Vacancies
         </Typography>
 
         <MaterialReactTable
@@ -73,6 +74,11 @@ export default function NewsDashBoard() {
           }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
+              <Tooltip arrow placement="left" title="View CV">
+                <IconButton color="success" onClick={(e) => handleClick(e, row?.original?._id)}>
+                  <ArticleIcon />
+                </IconButton>
+              </Tooltip>
               <Tooltip arrow placement="left" title="Edit">
                 <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
                   <EditIcon />

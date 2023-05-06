@@ -12,6 +12,7 @@ const JobCvSchema = new Schema(
     dob: { type: Date, required: true },
     coverletter: { type: String },
     addresss: { type: String },
+    vacancies: { type: Schema.Types.ObjectId, ref: "Vacancies" },
   },
   {
     timestamps: true,

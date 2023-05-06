@@ -68,7 +68,8 @@ export default function CustomDrawer() {
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             borderBottom: 1,
-            borderColor: "#eeeeee",
+            borderColor: "#424242",
+            boxSizing: "border-box",
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
             mb: theme.mixins.toolbar,
@@ -101,8 +102,7 @@ export default function CustomDrawer() {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: open ? drawerWidth : drawerWidthClose,
-              border: 1,
-              borderColor: "#eeeeee",
+              borderColor: "#424242",
               boxSizing: "border-box",
               transition: theme.transitions.create("width", {
                 easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
@@ -151,7 +151,7 @@ export default function CustomDrawer() {
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             mt: "60px",
             minHeight: "calc(100vh - 60px)",
-            backgroundColor: green["50"],
+            bgcolor: "background.paper",
             overflowY: "hidden",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 0,

@@ -26,7 +26,7 @@ export const ADMIN_ROUTES = [
   },
   {
     path: "/admin/document",
-    name: "Document Requested",
+    name: "Requested Document ",
     icon: createElement(ShoppingBagOutlinedIcon),
     activeIcon: createElement(ShoppingBagIcon),
   },
@@ -42,10 +42,10 @@ export const ADMIN_ROUTES = [
     icon: createElement(ManageAccountsOutlinedIcon),
     activeIcon: createElement(ManageAccountsIcon),
   },
-  {
-    path: "/admin/vacancies/cv",
-    name: "Received CV ",
-    icon: createElement(ManageAccountsOutlinedIcon),
-    activeIcon: createElement(ManageAccountsIcon),
-  },
+  // {
+  //   path: "/admin/vacancies/cv",
+  //   name: "Received CV ",
+  //   icon: createElement(ManageAccountsOutlinedIcon),
+  //   activeIcon: createElement(ManageAccountsIcon),
+  // },
 ];

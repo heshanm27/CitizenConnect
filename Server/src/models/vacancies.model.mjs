@@ -8,6 +8,7 @@ const JobVacanciesSchema = new Schema(
     description: { type: String, required: true },
     qualifications: { type: [String], required: true },
     salary: { type: Number, default: 0 },
+    responses: { type: Number, default: 0 },
     thumbnail: { type: String, default: "https://source.unsplash.com/random" },
   },
   {

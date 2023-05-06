@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-export default function NewsDashBoard() {
+export default function CvDashBoard() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
@@ -38,8 +38,8 @@ export default function NewsDashBoard() {
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h3" sx={{ my: 5, fontWeight: "bold" }}>
-          News
+        <Typography variant="h3" sx={{ mt: 5, fontWeight: "bold" }}>
+          Live Order
         </Typography>
 
         <MaterialReactTable
