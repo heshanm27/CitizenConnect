@@ -3,15 +3,20 @@ import User from "../models/user.model.mjs";
 
 export const Signup = async (email, password, firstName, lastName) => {
   try {
-    return await User.create(email, password, firstName, lastName);
+    return await User.create({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
   } catch (error) {
-    throw BadRequestError("Sign up failed");
+    throw new BadRequestError("Sign up failed");
   }
 };
 export const Signin = async (email, password) => {
   try {
-    return await User.signIn(email, password);
+    return await User.login(email, password);
   } catch (error) {
-    throw BadRequestError(error.message);
+    throw new BadRequestError(error.message);
   }
 };

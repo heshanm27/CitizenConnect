@@ -1,6 +1,10 @@
+import apiClient from "./axios.default";
+
+const basePath = "vacancies";
+
 export const getVacancies = async () => {
   try {
-    const reponse = await apiClient.get("/vacancies");
+    const reponse = await apiClient.get(`/${basePath}`);
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -9,7 +13,7 @@ export const getVacancies = async () => {
 
 export const getVacancy = async (id) => {
   try {
-    const reponse = await apiClient.get(`/vacancies/${id}`);
+    const reponse = await apiClient.get(`/${basePath}/${id}`);
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -18,7 +22,7 @@ export const getVacancy = async (id) => {
 
 export const createVacancy = async (data) => {
   try {
-    const reponse = await apiClient.post("/vacancies", data);
+    const reponse = await apiClient.post(`/${basePath}`, data);
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -27,7 +31,7 @@ export const createVacancy = async (data) => {
 
 export const updateVacancy = async (id, data) => {
   try {
-    const response = await apiClient.patch(`/vacancies/${id}`, data);
+    const response = await apiClient.patch(`/${basePath}/${id}`, data);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -36,7 +40,7 @@ export const updateVacancy = async (id, data) => {
 
 export const deleteVacancy = async (id) => {
   try {
-    const response = await apiClient.delete(`/vacancies/${id}`);
+    const response = await apiClient.delete(`/${basePath}/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);

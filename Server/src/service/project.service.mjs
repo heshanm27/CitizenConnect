@@ -3,7 +3,9 @@ import { BadRequestError, CustomError } from "../error/index.mjs";
 
 export const getProjects = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    return await Project.find()
+    return await Project.find({
+      title: { $regex: search, $options: "i" },
+    })
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
@@ -25,9 +27,8 @@ export const getProject = async (id) => {
 };
 
 export const createProject = async (project) => {
-  const newProject = new Project(project);
   try {
-    return await newProject.save();
+    return await Project.create(project);
   } catch (error) {
     throw new CustomError(error.message);
   }

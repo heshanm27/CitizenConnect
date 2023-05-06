@@ -1,4 +1,4 @@
-import VacanciesService from "../services/vacancies.service.mjs";
+import * as VacanciesService from "../service/vacancies.service.mjs";
 
 export const getVacancies = async (req, res) => {
   try {

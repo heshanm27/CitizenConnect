@@ -1,4 +1,4 @@
-import BudgetService from "../services/budget.service.mjs";
+import * as BudgetService from "../service/budget.service.mjs";
 
 const getBudget = async (req, res) => {
   try {
@@ -11,7 +11,14 @@ const getBudget = async (req, res) => {
 
 const getBudgets = async (req, res) => {
   try {
-    const budgets = await BudgetService.getBudgets();
+    const budgets = await BudgetService.getBudgets({
+      limit: req.query.limit,
+      skip: req.query.skip,
+      page: req.query.page,
+      search: req.query.search,
+      order: req.query.order,
+      sortBy: req.query.sortBy,
+    });
     res.status(200).json(budgets);
   } catch (error) {
     res.status(404).json({ message: error.message });

@@ -2,9 +2,11 @@ import mongoose, { Schema } from "mongoose";
 
 const BudgetSchema = new Schema(
   {
-    Year: { type: String, required: true },
+    year: { type: Date, required: true },
     allocated_budget: { type: Number, required: true },
-    description: { type: Boolean, default: false },
+    spended_budget: { type: Number, required: true },
+    unit: { type: String, required: true },
+    description: { type: String, default: false },
   },
   {
     timestamps: true,

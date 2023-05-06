@@ -12,6 +12,7 @@ import Vacancies from "../Pages/Vacancies/Vacancies";
 import News from "../Pages/News/News";
 import Budgets from "../Pages/BudgetAllocation/BudgetAllocation";
 import Documents from "../Pages/Documents/Documents";
+import ProjectDashBoard from "../Pages/Admin/ProjectDashBoard";
 
 function App() {
   const theme = createTheme({
@@ -23,15 +24,16 @@ function App() {
     <ThemeProvider theme={theme}>
       <Paper>
         <Routes>
-          <Route element={<ProtectedRoute />}>
-            <Route element={<CustomDrawer />}>
-              <Route path="/admin/budget" element={<BudgetDashBoard />} />
-              <Route path="/admin/document" element={<DocumentDashBoard />} />
-              <Route path="/admin/vacancies" element={<EmployemntDashBoard />} />
-              <Route path="/admin/news" element={<NewsDashBoard />} />
-              <Route path="/admin/vacancies/cv" element={<NewsDashBoard />} />
-            </Route>
+          {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<CustomDrawer />}>
+            <Route path="/admin/budget" element={<BudgetDashBoard />} />
+            <Route path="/admin/project" element={<ProjectDashBoard />} />
+            <Route path="/admin/document" element={<DocumentDashBoard />} />
+            <Route path="/admin/vacancies" element={<EmployemntDashBoard />} />
+            <Route path="/admin/news" element={<NewsDashBoard />} />
+            <Route path="/admin/vacancies/cv" element={<NewsDashBoard />} />
           </Route>
+          {/* </Route> */}
 
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />

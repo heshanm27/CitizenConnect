@@ -38,18 +38,20 @@ UserSchema.methods.resetPassword = async function (password) {
 UserSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (user) {
-    console.log("userpassword", user.password);
-    console.log("password", password);
     const IsPasswordMatched = await bcrypt.compare(password, user.password);
     console.log(IsPasswordMatched);
     if (IsPasswordMatched) {
+      console.log({
+        accessToken: user.generateJWTToken(),
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
       return {
         accessToken: user.generateJWTToken(),
         role: user.role,
         firstName: user.firstName,
         lastName: user.lastName,
-        avatar: user.avatar,
-        isVerified: user.isVerified,
       };
     }
     throw new UnAuthorized("Incorrect Credentials");

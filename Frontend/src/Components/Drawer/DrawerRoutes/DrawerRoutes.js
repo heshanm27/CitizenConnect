@@ -14,7 +14,13 @@ import { createElement } from "react";
 export const ADMIN_ROUTES = [
   {
     path: "/admin/budget",
-    name: "Project Budget",
+    name: "Budget",
+    icon: createElement(WorkHistoryOutlinedIcon),
+    activeIcon: createElement(WorkHistoryIcon),
+  },
+  {
+    path: "/admin/project",
+    name: "Project",
     icon: createElement(WorkHistoryOutlinedIcon),
     activeIcon: createElement(WorkHistoryIcon),
   },

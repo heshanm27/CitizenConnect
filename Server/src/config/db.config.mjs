@@ -6,7 +6,7 @@ export default async function connect() {
   console.log("url mongo", process.env.MONGOURL);
   await mongoose.connect(process.env.MONGOURL ?? "", {});
 }
-
+console.log("fil db", process.env.CLOUDINARY_NAME);
 mongoose.connection.on("connected", () => {
   logger.info("Mongoose connected to db😍");
 });

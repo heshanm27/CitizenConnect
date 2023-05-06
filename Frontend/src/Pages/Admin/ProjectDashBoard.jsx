@@ -3,10 +3,10 @@ import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
-import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-export default function BudgetDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getBudgets });
+import { getProjects } from "../../Api/project.api";
+export default function ProjectDashBoard() {
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getProjects });
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
@@ -15,8 +15,18 @@ export default function BudgetDashBoard() {
         header: "#Year",
         enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year).getFullYear();
+          return new Date(row.original.year_of_allocation).getFullYear();
         },
+      },
+      {
+        accessorKey: "title",
+        header: "Project Title",
+        enableGlobalFilter: true,
+      },
+      {
+        accessorKey: "project_owner",
+        header: "Project Owner",
+        enableGlobalFilter: true,
       },
       {
         accessorKey: "allocated_budget", //normal accessorKey
