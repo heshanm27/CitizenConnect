@@ -18,11 +18,14 @@ import SignIn from "../Pages/SignIn/SignIn";
 import ApplyVacancies from "../Pages/Vacancies/ApplyVacancies";
 import VacanciesView from "../Pages/Vacancies/VacanciesView";
 import NewsViews from "../Pages/News/NewsViews";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { mode } = useSelector((state) => state.modeSlice);
+  console.log("curruntmode", mode);
   const theme = createTheme({
     palette: {
-      mode: "dark",
+      mode,
     },
   });
   return (

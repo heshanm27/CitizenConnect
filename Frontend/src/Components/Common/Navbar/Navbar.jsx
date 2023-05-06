@@ -3,16 +3,20 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Stack from "@mui/material/Stack";
 import AvatarBtn from "../AvatarBtn/AvatarBtn";
-import { Container, useTheme } from "@mui/material";
+import { Container, IconButton, useTheme } from "@mui/material";
 import { Typography, Link } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import NightlightIcon from "@mui/icons-material/Nightlight";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import { changeMode } from "../../../Redux/darkMode.slice";
 export default function Navbar() {
   const theme = useTheme();
+  const { mode } = useSelector((state) => state.modeSlice);
   const navigate = useNavigate();
   const { isLoggedIn } = useSelector((state) => state.authSlice);
-
+  const dispatch = useDispatch();
   const menuItems = [
     { label: "Home", link: "/" },
     { label: "News", link: "/news" },
@@ -20,7 +24,11 @@ export default function Navbar() {
     { label: "Budget Allocation", link: "/budget" },
     { label: "Request Documents", link: "/documents" },
   ];
-
+  const handleClick = (event) => {
+    // setAnchorEl(event.currentTarget);
+    let curruntmode = mode === "light" ? "dark" : "light";
+    dispatch(changeMode(curruntmode));
+  };
   return (
     <>
       <AppBar color="inherit" position="fixed" variant="outlined">
@@ -38,12 +46,16 @@ export default function Navbar() {
             </Link>
 
             <Box>
-              <Stack direction={"row"} justifyContent={"end"}>
+              <Stack direction={"row"} justifyContent={"end"} alignItems={"center"}>
                 {menuItems.map((item) => (
                   <Box key={item.label}>
                     <CustomLink label={item.label} url={item.link} />
                   </Box>
                 ))}
+                <IconButton aria-label="delete" onClick={handleClick}>
+                  {mode === "light" ? <NightlightIcon /> : <WbSunnyIcon />}
+                  {/* <KeyboardArrowDownIcon /> */}
+                </IconButton>
               </Stack>
               <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                 {isLoggedIn && <AvatarBtn />}
