@@ -3,6 +3,9 @@ import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
+
+export const VacanciesCategory = ["IT", "HR", "Human", "Worker"];
+
 export default function BudgetForm() {
   const [richText, setRichText] = useState("");
   const editorRef = useRef(null);

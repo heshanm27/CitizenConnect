@@ -15,6 +15,8 @@ import ProjectDashBoard from "../Pages/Admin/ProjectDashBoard";
 import CvDashBoard from "../Pages/Admin/CvDashBoard";
 import VacanciesDashBoard from "../Pages/Admin/VacanciesDashBoard";
 import SignIn from "../Pages/SignIn/SignIn";
+import ApplyVacancies from "../Pages/Vacancies/ApplyVacancies";
+import VacanciesView from "../Pages/Vacancies/VacanciesView";
 
 function App() {
   const theme = createTheme({
@@ -43,7 +45,8 @@ function App() {
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<Home />} />
           <Route path="/vacancies" element={<Vacancies />} />
-          <Route path="/vacancies/:id" element={<Home />} />
+          <Route path="/vacancies/:id" element={<VacanciesView />} />
+          <Route path="/vacancies/:id/apply" element={<ApplyVacancies />} />
           <Route path="/budget" element={<Budgets />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="*" element={<NotFound />} />
