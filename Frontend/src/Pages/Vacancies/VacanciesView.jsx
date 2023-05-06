@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
-
+import EmailIcon from "@mui/icons-material/Email";
 export default function VacanciesView() {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -22,7 +22,7 @@ export default function VacanciesView() {
           src="https://images.unsplash.com/photo-1682686581484-a220483e6291?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
         />
         <Stack spacing={2} sx={{ my: 5 }}>
-          <Grid container alignItems="center" spacing={2}>
+          <Grid container justifyContent={"end"} alignItems="center" spacing={2}>
             <Grid item xs={12} sm={8}>
               <Typography>
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since
@@ -37,13 +37,21 @@ export default function VacanciesView() {
                 2023/02/2
               </Typography>
             </Grid>
-          </Grid>
 
-          <Typography>sdsdsds</Typography>
-          <Typography>Closing Date</Typography>
-          <Typography>Job Discription</Typography>
-          <Typography>sdsds</Typography>
-          <Button onClick={() => navigate("/apply")}>Apply</Button>
+            <Grid item xs={12} sx={{ p: 3 }}>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    "<h2> </p><p>Paragraph 4 </p><p>Paragraph 5 </p>'] 'My Doc 1' '<h2>MyTitleMyTitleMyTitleMyTitleMyTitleMyTitleMyTitle</h2><p>Paragraph 1 </p><p>Paragraph 2 </p><p>Paragraph 3 </p><p>Paragraph 4 </p><p>Paragraph 5 </p>",
+                }}
+              ></div>
+            </Grid>
+            <Grid item xs={2} justifyContent={"end"} alignItems={"end"}>
+              <Button endIcon={<EmailIcon />} variant="contained" fullWidth onClick={() => navigate("/vacancies/:id/apply")}>
+                Apply
+              </Button>
+            </Grid>
+          </Grid>
         </Stack>
       </Container>
       <Footer />

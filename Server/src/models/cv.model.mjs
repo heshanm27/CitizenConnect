@@ -4,9 +4,8 @@ const JobCvSchema = new Schema(
   {
     first_name: { type: String, required: true },
     last_name: { type: Number, required: true },
-    nic: { type: String },
+    nic_passport: { type: String },
     email: { type: String, required: true },
-    passport: { type: String },
     cv: { type: String, required: true },
     phone: { type: String },
     dob: { type: Date, required: true },
