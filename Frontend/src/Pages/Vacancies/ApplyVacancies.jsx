@@ -23,7 +23,7 @@ export default function ApplyVacancies() {
     type: "error",
     title: "",
   });
-  const { getRootProps, getInputProps, fileRejections } = useDropzone({
+  const { getRootProps, getInputProps, fileRejections, isFocused, isDragAccept, isDragReject } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
     maxFiles: 1,
     multiple: true,
@@ -247,7 +247,7 @@ export default function ApplyVacancies() {
             <Typography sx={{ mb: 2 }}>Upload CV</Typography>
             <Box
               sx={{
-                border: `2px dashed ${theme.palette.primary.main}`,
+                border: `2px dashed ${isDragAccept || isFocused ? theme.palette.secondary.main : theme.palette.primary.main}`,
                 borderRadius: theme.shape.borderRadius,
                 padding: theme.spacing(2),
                 textAlign: "center",
