@@ -2,9 +2,11 @@ import apiClient from "./axios.default";
 
 const basePath = "project";
 
-export const getProjects = async () => {
+export const getProjects = async (filter) => {
   try {
-    const reponse = await apiClient.get(`/${basePath}`);
+    const reponse = await apiClient.get(`/${basePath}`, {
+      params: filter,
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

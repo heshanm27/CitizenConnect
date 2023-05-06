@@ -7,7 +7,7 @@ const ProjectSchema = new Schema(
     spended_budget: { type: Number, required: true },
     unit: { type: String, required: true },
     project_owner: { type: String, required: true },
-    year_of_allocation: { type: Date, required: true },
+    year_of_allocation: { type: String, required: true },
     description: { type: String, default: false },
     thumbnail: { type: String },
   },

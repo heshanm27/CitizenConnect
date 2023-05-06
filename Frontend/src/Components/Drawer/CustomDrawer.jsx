@@ -127,7 +127,7 @@ export default function CustomDrawer() {
           >
             {open ? (
               <Typography align="left" variant="h6" noWrap component="div">
-                Nature Ayur
+                Citizen Connect
               </Typography>
             ) : null}
             <IconButton onClick={handleDrawerClose}>
@@ -149,7 +149,7 @@ export default function CustomDrawer() {
           component="main"
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            mt: "60px",
+            mt: "30px",
             minHeight: "calc(100vh - 60px)",
             bgcolor: "background.paper",
             overflowY: "hidden",

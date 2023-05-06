@@ -1,7 +1,7 @@
 import { BadRequestError, CustomError } from "../error/index.mjs";
 import Budget from "../models/budget.model.mjs";
 
-export const getBudgets = async ({ search = "", sortBy = "year", order = "-1", limit = "2", page = "1" }) => {
+export const getBudgets = async ({ search = "", sortBy = "year", order = "-1", limit = "500", page = "1" }) => {
   try {
     return await Budget.find({
       // year: { $regex: search, $options: "i" },
@@ -31,6 +31,9 @@ export const createBudget = async (budget) => {
   try {
     return await newBudget.save();
   } catch (error) {
+    if (error.code === 11000) {
+      throw new BadRequestError("Budget already exists for this year");
+    }
     throw new CustomError(error.message);
   }
 };

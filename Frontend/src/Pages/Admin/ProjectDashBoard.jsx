@@ -48,8 +48,8 @@ export default function ProjectDashBoard() {
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h3" sx={{ mt: 5, fontWeight: "bold" }}>
-          Live Order
+        <Typography variant="h3" sx={{ my: 5, fontWeight: "bold" }}>
+          Project
         </Typography>
 
         <MaterialReactTable

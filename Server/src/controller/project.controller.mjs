@@ -8,6 +8,7 @@ export const getProjects = async (req, res) => {
       search: req.query.search,
       sortBy: req.query.sortBy,
       order: req.query.order,
+      year: req.query.year,
       limit: req.query.limit,
       page: req.query.page,
     });
