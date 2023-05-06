@@ -17,6 +17,7 @@ import VacanciesDashBoard from "../Pages/Admin/VacanciesDashBoard";
 import SignIn from "../Pages/SignIn/SignIn";
 import ApplyVacancies from "../Pages/Vacancies/ApplyVacancies";
 import VacanciesView from "../Pages/Vacancies/VacanciesView";
+import NewsViews from "../Pages/News/NewsViews";
 
 function App() {
   const theme = createTheme({
@@ -43,7 +44,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/admin/login" element={<SignIn />} />
           <Route path="/news" element={<News />} />
-          <Route path="/news/:id" element={<Home />} />
+          <Route path="/news/:id" element={<NewsViews />} />
           <Route path="/vacancies" element={<Vacancies />} />
           <Route path="/vacancies/:id" element={<VacanciesView />} />
           <Route path="/vacancies/:id/apply" element={<ApplyVacancies />} />

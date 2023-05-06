@@ -1,13 +1,58 @@
-import { Box, Chip, Container, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Chip, Container, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { getProjects } from "../../Api/project.api";
+import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
+import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
+import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import { deleteBudget } from "../../Api/budget.api";
+import ProjectForm from "../../Components/Form/ProjectForm";
 export default function ProjectDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-budgets"], queryFn: getProjects });
+  const theme = useTheme();
+  const queryClient = useQueryClient();
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [addDialog, setAddDialog] = useState(false);
+  const [docID, setDocID] = useState("");
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-project"], queryFn: getProjects });
   console.log(error, data, isLoading, isError);
+
+  const {
+    isLoading: deleteLoading,
+    error: deleteError,
+    mutate,
+  } = useMutation({
+    mutationFn: deleteBudget,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-budgets"]);
+      setConfirmDialog(false);
+      setNotify({
+        isOpen: true,
+        message: "Delete success",
+        title: "Success",
+        type: "success",
+      });
+    },
+    onError: () => {
+      setNotify({
+        isOpen: true,
+        message: "Action Failed",
+        title: deleteError?.message,
+        type: "error",
+      });
+    },
+  });
+  const handleDelete = () => {
+    mutate(docID);
+  };
   const columns = useMemo(
     () => [
       {
@@ -70,9 +115,14 @@ export default function ProjectDashBoard() {
             isLoading,
             showAlertBanner: isError,
           }}
-          rowCount={data?.length ?? 0}
+          rowCount={data?.projetData.length ?? 0}
           columns={columns}
-          data={data ?? []}
+          data={data?.projetData ?? []}
+          renderTopToolbarCustomActions={() => (
+            <Button color="secondary" onClick={() => setAddDialog(true)} variant="contained">
+              Add Project
+            </Button>
+          )}
           muiToolbarAlertBannerProps={
             isError
               ? {
@@ -96,6 +146,19 @@ export default function ProjectDashBoard() {
             </Box>
           )}
         />
+
+        <ConfirmDialog
+          isOpen={() => setConfirmDialog(false)}
+          loading={deleteLoading}
+          onConfirm={handleDelete}
+          open={confirmDialog}
+          subTitle={"This action can't be undone"}
+          title={"Delete"}
+        />
+        <CustomSnackBar notify={notify} setNotify={setNotify} />
+        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add News"}>
+          <ProjectForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
       </Container>
     </>
   );

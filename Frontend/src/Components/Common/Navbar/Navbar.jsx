@@ -62,11 +62,15 @@ function CustomLink({ label, url }) {
   const [isActive, setIsActive] = useState(false);
   const theme = useTheme();
   useEffect(() => {
-    if (pathname === url) {
-      setIsActive(true);
-    }
-  }, [pathname]);
+    const firstPathnameSegment = pathname.split("/")[1];
+    const firstUrlSegment = url.split("/")[1];
 
+    if (firstPathnameSegment === firstUrlSegment) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [pathname, url]);
   return (
     <Link
       sx={{ ml: 4, mr: 4, fontSize: "16px", fontWeight: "bold" }}

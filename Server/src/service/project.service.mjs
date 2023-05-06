@@ -1,7 +1,7 @@
 import Project from "../models/project.model.mjs";
 import { BadRequestError, CustomError } from "../error/index.mjs";
 
-export const getProjects = async ({ search = "", year = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getProjects = async ({ search = "", year = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
     const query = {};
     if (search) {

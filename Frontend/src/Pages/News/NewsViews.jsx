@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
 import EmailIcon from "@mui/icons-material/Email";
-export default function VacanciesView() {
+export default function NewsViews() {
   const navigate = useNavigate();
   const theme = useTheme();
   return (

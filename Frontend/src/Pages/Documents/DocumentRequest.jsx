@@ -10,7 +10,7 @@ import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
-export default function ApplyVacancies() {
+export default function DocumentRequest() {
   const theme = useTheme();
   const [richText, setRichText] = useState("");
   const dropzoneRef = useRef(null);
