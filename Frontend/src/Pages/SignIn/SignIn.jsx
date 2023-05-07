@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import apiClient from "../../Api/axios.default";
 import { useDispatch, useSelector } from "react-redux";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
+import { login } from "../../Redux/auth.slice";
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -52,7 +53,7 @@ export default function SignIn() {
     try {
       const resposne = await apiClient.post("/auth/signIn", values);
       console.log(values);
-      //   dispatch(login(resposne.data));
+      dispatch(login(resposne.data));
       resetForm();
     } catch (e) {
       console.log("error", e);
@@ -64,11 +65,10 @@ export default function SignIn() {
       });
     }
 
-    // await mutate({
-    //   password: values.password,
-    //   email: values.email,
-
-    // });
+    await mutate({
+      password: values.password,
+      email: values.email,
+    });
   }
 
   const navigate = useNavigate();
@@ -86,16 +86,8 @@ export default function SignIn() {
   }, [location]);
 
   useEffect(() => {
-    switch (role) {
-      case "admin":
-        navigate("/admin/orders/live", { replace: true, preventScrollReset: true });
-        return;
-      case "seller":
-        navigate("/seller/orders/live", { replace: true, preventScrollReset: true });
-        return;
-      case "user":
-        navigate("/", { replace: true });
-        return;
+    if (isLoggedIn) {
+      navigate("/admin/budget", { replace: true, preventScrollReset: true });
     }
   }, [isLoggedIn]);
   return (
@@ -110,7 +102,7 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 2 }} variant="outlined">
             <CssBaseline />
             <Box
               sx={{

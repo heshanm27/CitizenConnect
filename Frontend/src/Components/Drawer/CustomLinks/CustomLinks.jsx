@@ -1,6 +1,7 @@
 import { ListItemButton, ListItemText, Tooltip, Typography, ListItem, ListItemIcon, useTheme, Stack } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { logOut } from "../../../Redux/auth.slice";
 
 export default function CustomLink({ drawerStatus, label, icon, path, activeIcon }) {
   const location = useLocation();
@@ -11,7 +12,9 @@ export default function CustomLink({ drawerStatus, label, icon, path, activeIcon
 
   const handleClick = () => {
     if (path === "/logout") {
-      // dispatch(logOut("logged out"));
+      console.log("logout path active link");
+      dispatch(logOut("logged out"));
+      navigate("/admin/login", { replace: true });
       return;
     }
     navigate(path, { replace: true });
