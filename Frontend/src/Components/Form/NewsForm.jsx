@@ -1,104 +1,50 @@
-import { Box, Button, CircularProgress, Grid, InputAdornment, Paper, Stack, TextField, Typography, useTheme } from "@mui/material";
-import React, { useRef, useState, useEffect } from "react";
-import { Accept, useDropzone } from "react-dropzone";
-import { Editor } from "@tinymce/tinymce-react";
-import Select from "react-select";
-import "react-medium-image-zoom/dist/styles.css";
-import CloseIcon from "@mui/icons-material/Close";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchAllCategories, fetchSubCategory } from "../../../../api/categoryApi";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CustomSnackBar from "../../snackbar/Snackbar";
-import { addProduct } from "../../../../api/productApi";
-import { useNavigate } from "react-router-dom";
+import { Editor } from "@tinymce/tinymce-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDropzone } from "react-dropzone";
+import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
+import { createNews } from "../../Api/news.api";
 
-export default function NewsForm() {
+export const NEWSCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
+
+export default function NewsForm({ setNotify, setDialogOff }) {
   const theme = useTheme();
-  const navigate = useNavigate();
-  const dropzoneRef = useRef < HTMLDivElement > null;
-  const editorRef = useRef < any > null;
-  const [mainCategoryOption, setMainCategoryOption] = useState < any > [];
-  const [subCategoryOption, setSubCategoryOption] = useState < any > [];
-  const [richText, setRichText] = useState < string > "";
-  const [selectedFiles, setSelectedFiles] = useState < any > [];
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "error",
-    title: "",
-  });
-
-  const { data: categorey, error, isLoading: categoreyIsLoading, isError } = useQuery({ queryKey: ["mainCategory"], queryFn: fetchAllCategories });
-  const productMutatuion = useMutation({
-    mutationFn: addProduct,
-    onSuccess: (data) => {
-      navigate("/seller/products");
-    },
-    onError: (error) => {
-      console.log("error", error);
-      setNotify({
-        isOpen: true,
-        message: error.message,
-        type: "error",
-        title: "Error",
-      });
-    },
-  });
-  // Formik validation schema
-  const validationSchema = Yup.object().shape({
-    productName: Yup.string().required("Product Name is required"),
-    productBrand: Yup.string().required("Product Brand is required"),
-    productPrice: Yup.number().required("Product Price is required").min(1, "Minimum value is 1").max(100000, "Maximum value is 100000"),
-    productQuantity: Yup.number().required("Product Quantity is required").min(1, "Minimum value is 0").max(10000, "Maximum value is 10000"),
-  });
-
-  // Formik form state and submission logic
-  const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
-    initialValues: {
-      productName: "",
-      productBrand: "",
-      productPrice: 1,
-      productQuantity: 1,
-      mainCategory: "",
-      subCategory: [],
-    },
-    validationSchema,
-    onSubmit: (values) => {
-      console.log(selectedFiles);
-      productMutatuion.mutate({
-        name: values.productName,
-        price: values.productPrice,
-        stock: values.productQuantity,
-        category: values.mainCategory,
-        subCategory: values.subCategory,
-        description: richText,
-        images: selectedFiles,
-        brand: values.productBrand,
-      });
-    },
-  });
-
-  const { getRootProps, getInputProps, fileRejections } = useDropzone({
+  const [richText, setRichText] = useState("sdsdsd");
+  const dropzoneRef = useRef(null);
+  const editorRef = useRef(null);
+  const queryClient = useQueryClient();
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const { getRootProps, getInputProps, fileRejections, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
-    maxFiles: 6,
+    maxFiles: 1,
     multiple: true,
-    accept: { "image/jpeg": [".jpeg", ".png"] },
+    accept: { "image/jpeg": [".jpeg", ".png"], "application/pdf": [".pdf"] },
     maxSize: 1000000,
   });
 
   const handleDrop = (acceptedFiles) => {
-    // Create an array from the acceptedFiles object
-
-    // Calculate the total number of files after adding the new files
-    const totalFiles = selectedFiles.length + acceptedFiles.length;
-
-    // If the total number of files exceeds 6, show an error or take appropriate action
-    if (totalFiles > 6) {
+    if (acceptedFiles.length > 1) {
       setNotify({
         isOpen: true,
-        message: "You can only upload 6 images",
+        message: "You can only upload 1 file",
         type: "error",
         title: "Error",
       });
@@ -106,131 +52,171 @@ export default function NewsForm() {
       return;
     }
     const newFiles = Array.from(acceptedFiles);
+    console.log(newFiles);
     // Add the new files to the selectedFiles array
-    setSelectedFiles([...selectedFiles, ...newFiles]);
+    setSelectedFiles(newFiles);
   };
-
-  const handleRemoveImage = (index) => {
-    // Remove image from selectedFiles array
-    const updatedFiles = [...selectedFiles];
-    updatedFiles.splice(index, 1);
-    setSelectedFiles(updatedFiles);
-  };
-
   const handleEditorChange = (content, editor) => {
     if (editorRef.current) {
       setRichText(editorRef.current.getContent());
     }
   };
 
-  useEffect(() => {
-    if (categorey) {
-      setMainCategoryOption(categorey?.categories.map((item) => ({ value: item._id, label: item.name })));
-    }
-    if (values.mainCategory) {
-      const foundCategory = categorey?.categories?.find((item) => item._id === values.mainCategory);
-      setSubCategoryOption(foundCategory?.subCategory?.map((item) => ({ value: item, label: item })));
-    }
-  }, [categorey, values]);
+  // useEffect(() => {
+  
+  //     editorRef.current.setContent("<p>Hello world!</p>");
+  
+  // }, []);
 
-  if (categoreyIsLoading)
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <CircularProgress />
-      </Box>
-    );
+  const { isLoading, isError, error, mutate } = useMutation({
+    mutationFn: createNews,
+    onSuccess: (value) => {
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-news"]);
+    },
+  });
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("News title is required"),
+    short_description: Yup.string().required("News short discription is required"),
+    news_category: Yup.array().of(Yup.string()).min(1, "At least one news type is required"),
+  });
+
+  const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
+    initialValues: {
+      title: "",
+      short_description: "",
+      news_category: [""],
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      mutate({
+        title: values.title,
+        short_description: values.short_description,
+        description: richText,
+        news_category: values.news_category,
+        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+      });
+    },
+  });
   return (
-    <Paper sx={{ p: 2 }}>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2} justifyContent={"center"}>
-          <Grid item xs={12} sm={6}>
-            <Stack direction={"column"} spacing={2}>
-              <TextField
-                label="Product Name"
-                name="productName"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                autoFocus={errors.productName ? true : false}
-                helperText={errors.productName ? errors.productName : null}
-                error={errors.productName ? true : false}
-              />
-              <TextField
-                label="Product Brand"
-                name="productBrand"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                autoFocus={errors.productBrand ? true : false}
-                helperText={errors.productBrand ? errors.productBrand : null}
-                error={errors.productBrand ? true : false}
-              />
-              <TextField
-                label="Product Price"
-                name="productPrice"
-                type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AttachMoneyIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={handleChange}
-                defaultValue={1}
-                onBlur={handleBlur}
-                autoFocus={errors.productPrice ? true : false}
-                helperText={errors.productPrice ? errors.productPrice : null}
-                error={errors.productPrice ? true : false}
-                inputProps={{ min: "1", max: "100000", step: ".01" }}
-              />
-            </Stack>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Stack direction={"column"} spacing={2}>
-              <TextField
-                type="number"
-                label="Product Quantity"
-                name="productQuantity"
-                defaultValue={1}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                autoFocus={errors.productQuantity ? true : false}
-                helperText={errors.productQuantity ? errors.productQuantity : null}
-                error={errors.productQuantity ? true : false}
-                inputProps={{ min: "0", max: "10000" }}
-              />
-              <Box>
-                <Typography>Select Main Categorey</Typography>
+    <>
+      <Container maxWidth="lg">
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6} spacing={2}>
+            <TextField
+              sx={{ my: 2 }}
+              name="title"
+              label="News Title"
+              fullWidth
+              inputProps={{ min: 1 }}
+              error={Boolean(errors.title)}
+              value={values.title}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={errors.title}
+            />
+
+            <Box>
+              <InputLabel sx={{ my: 1 }} required id="demo-simple-select-label">
+                News Type
+              </InputLabel>
+              <FormControl fullWidth>
                 <Select
-                  name="mainCategory"
-                  options={mainCategoryOption}
-                  // value={values.mainCategory}
-                  onChange={(option) => {
-                    console.log(values.mainCategory);
-                    setFieldValue("mainCategory", option.value);
+                  name="news_category"
+                  multiple
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300, // adjust the maxHeight to suit your needs
+                      },
+                    },
                   }}
+                  displayEmpty
+                  error={Boolean(errors.news_category)}
+                  value={values.news_category}
                   onBlur={handleBlur}
-                />
-              </Box>
-              <Box>
-                <Typography>Select Sub Categorey</Typography>
-                <Select
-                  isMulti
-                  name="mainCategory"
-                  isDisabled={subCategoryOption?.length < 0 || !values?.mainCategory ? true : false}
-                  // value={values.subCategory}
-                  options={subCategoryOption}
-                  onChange={(item) => setFieldValue("subCategory", item)}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  onBlur={handleBlur}
-                />
-              </Box>
-            </Stack>
+                  onChange={handleChange}
+                >
+                  {/* <MenuItem disabled value="">
+                    <em>None</em>
+                  </MenuItem> */}
+                  {NEWSCategoryTypes.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error={Boolean(errors.news_category)}>{errors.news_category ? errors.news_category : "Select News Category"}</FormHelperText>
+              </FormControl>
+            </Box>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              sx={{ my: 2 }}
+              name="short_description"
+              multiline
+              label="Short Description"
+              fullWidth
+              inputProps={{ min: 1 }}
+              error={Boolean(errors.short_description)}
+              value={values.short_description}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={errors.short_description}
+            />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Box sx={{ mb: 5 }}>
+              <Typography sx={{ mb: 2 }}>News Description</Typography>
+              <Editor
+                onInit={(evt, editor) => (editorRef.current = editor)}
+                onChange={handleEditorChange}
+                apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
+                init={{
+                  height: 400,
+                  menubar: false,
+                  plugins: [
+                    "advlist",
+                    "autolink",
+                    "lists",
+                    "link",
+                    "image",
+                    "charmap",
+                    "preview",
+                    "anchor",
+                    "searchreplace",
+                    "visualblocks",
+                    "code",
+                    "fullscreen",
+                    "insertdatetime",
+                    "media",
+                    "table",
+                    "code",
+                    "help",
+                    "wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | blocks | " +
+                    "bold italic forecolor | alignleft aligncenter " +
+                    "alignright alignjustify | bullist numlist outdent indent | " +
+                    "removeformat | help" +
+                    "| image",
+                  content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                }}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Typography sx={{ mb: 2 }}>Upload Thumbnail</Typography>
             <Box
               sx={{
-                border: `2px dashed ${theme.palette.primary.main}`,
+                border: `2px dashed ${isDragActive ? theme.palette.secondary.main : theme.palette.primary.main}`,
                 borderRadius: theme.shape.borderRadius,
                 padding: theme.spacing(2),
                 textAlign: "center",
@@ -245,61 +231,39 @@ export default function NewsForm() {
             >
               <input {...getInputProps()} />
               {selectedFiles.length === 0 ? (
-                <Typography variant="body1" align="center" color="textSecondary">
-                  Drag and drop files here, or click to select files
-                </Typography>
+                <Stack direction={"column"} justifyContent={"center"} alignItems={"center"}>
+                  <Typography variant="body1" align="center" color="textSecondary" sx={{ my: 4 }}>
+                    Drag and drop files here, or click to select files
+                  </Typography>
+                  <img src={DefaultSVg} alt="default image" width={"200px"} />
+                </Stack>
               ) : (
-                <img src={URL.createObjectURL(file)} alt={file.name} style={{ maxWidth: "100%", maxHeight: "100%" }} loading="lazy" />
+                selectedFiles.map((file, index) => {
+                  if (file.type === "application/pdf") {
+                    return (
+                      <object key={index} data={URL.createObjectURL(file)} type="application/pdf" width="50%" height="250">
+                        <p>Preview not available.</p>
+                      </object>
+                    );
+                  } else {
+                    return <img key={index} src={URL.createObjectURL(file)} alt={file.name} style={{ maxWidth: "100%", maxHeight: "100%" }} loading="lazy" />;
+                  }
+                })
               )}
             </Box>
           </Grid>
-          <Grid item xs={12}>
-            <Typography>Product Description</Typography>
-            <Editor
-              onInit={(evt, editor) => (editorRef.current = editor)}
-              onChange={handleEditorChange}
-              apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
-              init={{
-                height: 500,
-                menubar: false,
-                plugins: [
-                  "advlist",
-                  "autolink",
-                  "lists",
-                  "link",
-                  "image",
-                  "charmap",
-                  "preview",
-                  "anchor",
-                  "searchreplace",
-                  "visualblocks",
-                  "code",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "code",
-                  "help",
-                  "wordcount",
-                ],
-                toolbar:
-                  "undo redo | blocks | " +
-                  "bold italic forecolor | alignleft aligncenter " +
-                  "alignright alignjustify | bullist numlist outdent indent | " +
-                  "removeformat | help" +
-                  "| image",
-                content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-              }}
-            />
-          </Grid>
-          <Grid item xs={8} justifyContent={"center"} alignItems={"center"}>
-            <Button fullWidth variant="contained" type="submit" disabled={productMutatuion.isLoading ? true : false}>
-              {productMutatuion.isLoading ? <CircularProgress /> : "Submit"}
+          <Grid item xs={12} md={12}>
+            {isError && (
+              <Typography align="center" color="red">
+                {error.message}
+              </Typography>
+            )}
+            <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
+              {isLoading ? <CircularProgress /> : " Submit"}
             </Button>
           </Grid>
         </Grid>
-      </form>
-      <CustomSnackBar notify={notify} setNotify={setNotify} />
-    </Paper>
+      </Container>
+    </>
   );
 }

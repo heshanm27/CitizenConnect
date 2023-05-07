@@ -2,21 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 const JobCvSchema = new Schema(
   {
-    applicant_first_name: { type: String, required: true },
-    applicant_last_name: { type: Number, required: true },
-    nic: { type: String },
+    first_name: { type: String, required: true },
+    last_name: { type: Number, required: true },
+    nic_passport: { type: String },
     email: { type: String, required: true },
-    passport: { type: String },
-    additional_info: { type: String },
-    cv: { type: String },
+    cv: { type: String, required: true },
     phone: { type: String },
     dob: { type: Date, required: true },
-    description: { type: Boolean, default: false },
+    coverletter: { type: String },
     addresss: { type: String },
+    vacancies: { type: Schema.Types.ObjectId, ref: "Vacancies" },
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("Projects", JobCvSchema);
+export default mongoose.model("CV", JobCvSchema);

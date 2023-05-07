@@ -14,13 +14,19 @@ import { createElement } from "react";
 export const ADMIN_ROUTES = [
   {
     path: "/admin/budget",
-    name: "Project Budget",
+    name: "Budget",
+    icon: createElement(WorkHistoryOutlinedIcon),
+    activeIcon: createElement(WorkHistoryIcon),
+  },
+  {
+    path: "/admin/project",
+    name: "Project",
     icon: createElement(WorkHistoryOutlinedIcon),
     activeIcon: createElement(WorkHistoryIcon),
   },
   {
     path: "/admin/document",
-    name: "Document Requested",
+    name: "Requested Document ",
     icon: createElement(ShoppingBagOutlinedIcon),
     activeIcon: createElement(ShoppingBagIcon),
   },
@@ -36,10 +42,10 @@ export const ADMIN_ROUTES = [
     icon: createElement(ManageAccountsOutlinedIcon),
     activeIcon: createElement(ManageAccountsIcon),
   },
-  {
-    path: "/admin/vacancies/cv",
-    name: "Received CV ",
-    icon: createElement(ManageAccountsOutlinedIcon),
-    activeIcon: createElement(ManageAccountsIcon),
-  },
+  // {
+  //   path: "/admin/vacancies/cv",
+  //   name: "Received CV ",
+  //   icon: createElement(ManageAccountsOutlinedIcon),
+  //   activeIcon: createElement(ManageAccountsIcon),
+  // },
 ];

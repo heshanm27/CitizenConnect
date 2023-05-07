@@ -29,7 +29,7 @@ export default function CustomLink({ drawerStatus, label, icon, path, activeIcon
       >
         <ListItemButton
           sx={{
-            backgroundColor: isActive ? "#E9FBCD" : "",
+            backgroundColor: isActive ? theme.palette.action.selected : "",
             borderRadius: theme.spacing(1),
             display: "flex",
             justifyContent: "space-between",
@@ -39,7 +39,7 @@ export default function CustomLink({ drawerStatus, label, icon, path, activeIcon
           <Stack direction="row" justifyContent="center" alignItems="center" spacing={4}>
             <ListItemIcon
               sx={{
-                color: isActive ? "#66A700" : "#878787",
+                color: isActive ? theme.palette.action.activatedOpacity : "#878787",
                 minWidth: "auto",
               }}
             >
@@ -49,7 +49,7 @@ export default function CustomLink({ drawerStatus, label, icon, path, activeIcon
               <ListItemText>
                 <Typography
                   sx={{
-                    color: isActive ? "#66A700" : "#878787",
+                    color: isActive ? theme.palette.action.activatedOpacity : "#878787",
                   }}
                 >
                   {label}

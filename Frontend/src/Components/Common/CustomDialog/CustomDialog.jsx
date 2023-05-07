@@ -2,7 +2,7 @@ import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography, useThe
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function CustomeDialog({ open, setOpen, children, title }) {
+export default function CustomeDialog({ open, setOpen, children, title, size }) {
   const theme = useTheme();
 
   //style objects
@@ -20,7 +20,7 @@ export default function CustomeDialog({ open, setOpen, children, title }) {
     },
   };
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} fullWidth sx={displaywraper}>
+    <Dialog maxWidth={size ? size : "md"} open={open} onClose={() => setOpen(false)} fullWidth sx={displaywraper}>
       <DialogTitle>
         <Box
           sx={{

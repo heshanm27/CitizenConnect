@@ -1,85 +1,96 @@
-import React from "react";
+import { Box, Button, Chip, Container, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
+import React, { useMemo, useState } from "react";
+import MaterialReactTable from "material-react-table";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import EditIcon from "@mui/icons-material/Edit";
+import { deleteBudget, getBudgets } from "../../Api/budget.api";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import NewsForm from "../../Components/Form/NewsForm";
+import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
+import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
+import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import { deleteNews, getNews } from "../../Api/news.api";
 
 export default function NewsDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: () => fetch("/api/orders").then((res) => res.json()) });
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [docId, setDocId] = useState("");
-  const open = Boolean(anchorEl);
-  const navigate = useNavigate();
-  const handleClick = (event, id) => {
-    setAnchorEl(event.currentTarget);
-    setDocId(id);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-    navigate(`/admin/orders/${docId}`);
-  };
-
+  const theme = useTheme();
+  const queryClient = useQueryClient();
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [addDialog, setAddDialog] = useState(false);
+  const [docID, setDocID] = useState("");
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-news"], queryFn: getNews });
+  const {
+    isLoading: deleteLoading,
+    error: deleteError,
+    mutate,
+  } = useMutation({
+    mutationFn: deleteNews,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-news"]);
+      setConfirmDialog(false);
+      setNotify({
+        isOpen: true,
+        message: "Delete success",
+        title: "Success",
+        type: "success",
+      });
+    },
+    onError: () => {
+      setNotify({
+        isOpen: true,
+        message: "Action Failed",
+        title: deleteError?.message,
+        type: "error",
+      });
+    },
+  });
+  console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "orderId", //access nested data with dot notation
-        header: "#ID",
+        accessorKey: "title", //normal accessorKey
+        header: "News title",
         enableGlobalFilter: false,
       },
       {
-        accessorFn: (row) => row.user.firstName + " " + row.user.lastName, //access nested data with dot notation
-        header: "Customer Name",
-        enableGlobalFilter: true,
+        accessorKey: "short_description", //normal accessorKey
+        header: "News Short Description",
+        enableGlobalFilter: false,
       },
       {
         accessorKey: "createdAt", //normal accessorKey
-        header: "Date",
+        header: "News published date",
+        enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => {
           return new Date(row.original.createdAt).toLocaleDateString();
         },
       },
       {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "news_category", //normal accessorKey
+        header: "News categories",
+        enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => {
-          switch (row.original.status) {
-            case "new":
-              return <Chip label="New" color="error" />;
-            case "approved":
-              return <Chip label="Approved" color="success" />;
-            case "rejected":
-              return <Chip label="Rejected" color="error" />;
-            case "delivered":
-              return <Chip label="Delivered" color="success" />;
-            default:
-              return <Chip label="Pending" color="warning" />;
-          }
-        },
-      },
-      {
-        accessorKey: "totalPrice",
-        header: "Total Amount",
-        Cell: ({ renderedCellValue, row }) => {
-          return row.original.totalPrice?.toLocaleString?.("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-        },
-      },
-      {
-        accessorKey: "isPaid",
-        header: "Payment",
-        Cell: ({ renderedCellValue, row }) => {
-          return row.original.isPaid ? <Chip label="Paid" color="success" /> : <Chip label="UnPaid" color="default" />;
+          // console.log("news types",news_category);
+          return new Date(row.original.createdAt).toLocaleDateString();
         },
       },
     ],
     []
   );
+  const handleDelete = () => {
+    mutate(docID);
+  };
 
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h3" sx={{ mt: 5, fontWeight: "bold" }}>
-          Live Order
+        <Typography variant="h3" sx={{ my: 5, fontWeight: "bold" }}>
+          News
         </Typography>
 
         <MaterialReactTable
@@ -100,9 +111,14 @@ export default function NewsDashBoard() {
             isLoading,
             showAlertBanner: isError,
           }}
-          rowCount={data?.orders.length ?? 0}
+          rowCount={data?.news?.length ?? 0}
           columns={columns}
-          data={data?.orders ?? []}
+          data={data?.news ?? []}
+          renderTopToolbarCustomActions={() => (
+            <Button color="secondary" onClick={() => setAddDialog(true)} variant="contained">
+              Add News
+            </Button>
+          )}
           muiToolbarAlertBannerProps={
             isError
               ? {
@@ -115,26 +131,36 @@ export default function NewsDashBoard() {
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
                 <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
-                  <MoreVertIcon />
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="left" title="Delete">
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    setConfirmDialog(true);
+                    setDocID(row?.original?._id);
+                  }}
+                >
+                  <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>
             </Box>
           )}
         />
+        <ConfirmDialog
+          isOpen={() => setConfirmDialog(false)}
+          loading={deleteLoading}
+          onConfirm={handleDelete}
+          open={confirmDialog}
+          subTitle={"This action can't be undone"}
+          title={"Delete"}
+        />
+        <CustomSnackBar notify={notify} setNotify={setNotify} />
+        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add News"}>
+          <NewsForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
       </Container>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem onClick={handleClose}>
-          <Edit /> Action
-        </MenuItem>
-      </Menu>
     </>
   );
 }

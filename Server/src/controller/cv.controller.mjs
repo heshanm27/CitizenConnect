@@ -1,4 +1,4 @@
-import CVService from "../services/cv.service.js";
+import * as CVService from "../service/cv.service.mjs";
 
 export const getCVs = async (req, res) => {
   try {

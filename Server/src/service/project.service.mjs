@@ -1,12 +1,28 @@
 import Project from "../models/project.model.mjs";
 import { BadRequestError, CustomError } from "../error/index.mjs";
 
-export const getProjects = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getProjects = async ({ search = "", year = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
-    return await Project.find()
+    const query = {};
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    if (year) {
+      query.year_of_allocation = year;
+    }
+    const projetData = await Project.find(query)
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
+    //find count for matching products
+    const totalDocCount = await Project.countDocuments(query)
+      .sort({
+        [sortBy]: order,
+      })
+      .count();
+
+    const total = Math.ceil(totalDocCount / limit);
+    return { projetData, total };
   } catch (error) {
     throw new CustomError(error.message);
   }
@@ -25,9 +41,8 @@ export const getProject = async (id) => {
 };
 
 export const createProject = async (project) => {
-  const newProject = new Project(project);
   try {
-    return await newProject.save();
+    return await Project.create(project);
   } catch (error) {
     throw new CustomError(error.message);
   }

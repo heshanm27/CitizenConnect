@@ -9,7 +9,8 @@ import SegmentIcon from "@mui/icons-material/Segment";
 import { Avatar, Container, IconButton, ListItemIcon, Menu, MenuItem, Stack, useTheme } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import CustomLink from "./CustomLinks/CustomLinks";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import NightlightIcon from "@mui/icons-material/Nightlight";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import { green } from "@mui/material/colors";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -18,11 +19,13 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { Logout } from "@mui/icons-material";
 
 import HomeIcon from "@mui/icons-material/Home";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { changeMode } from "../../Redux/darkMode.slice";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 
 export default function CustomDrawer() {
+  const { mode } = useSelector((state) => state.modeSlice);
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   // const { role, avatar, firstName } = useAppSelector((state) => state.authSlice);
@@ -34,7 +37,9 @@ export default function CustomDrawer() {
   const navigate = useNavigate();
   const menuOpen = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    // setAnchorEl(event.currentTarget);
+    let curruntmode = mode === "light" ? "dark" : "light";
+    dispatch(changeMode(curruntmode));
   };
 
   const handleClose = (state) => {
@@ -68,7 +73,8 @@ export default function CustomDrawer() {
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
             borderBottom: 1,
-            borderColor: "#eeeeee",
+            borderColor: "#424242",
+            boxSizing: "border-box",
             overflowX: "hidden",
             ml: `${drawerWidth}px`,
             mb: theme.mixins.toolbar,
@@ -87,10 +93,11 @@ export default function CustomDrawer() {
               <div></div>
             )}
             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-              <Avatar alt="Remy Sharp" />
+              {/* <Avatar alt="Remy Sharp" /> */}
               {/* <Typography>{firstName}</Typography> */}
               <IconButton aria-label="delete" onClick={handleClick}>
-                <KeyboardArrowDownIcon />
+                {mode === "light" ? <NightlightIcon /> : <WbSunnyIcon />}
+                {/* <KeyboardArrowDownIcon /> */}
               </IconButton>
             </Stack>
           </Stack>
@@ -101,8 +108,7 @@ export default function CustomDrawer() {
             flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: open ? drawerWidth : drawerWidthClose,
-              border: 1,
-              borderColor: "#eeeeee",
+              borderColor: "#424242",
               boxSizing: "border-box",
               transition: theme.transitions.create("width", {
                 easing: open ? theme.transitions.easing.sharp : theme.transitions.easing.sharp,
@@ -127,7 +133,7 @@ export default function CustomDrawer() {
           >
             {open ? (
               <Typography align="left" variant="h6" noWrap component="div">
-                Nature Ayur
+                Citizen Connect
               </Typography>
             ) : null}
             <IconButton onClick={handleDrawerClose}>
@@ -149,9 +155,9 @@ export default function CustomDrawer() {
           component="main"
           sx={{
             width: `calc(100% - ${open ? drawerWidth : drawerWidthClose}px)`,
-            mt: "60px",
+            mt: "30px",
             minHeight: "calc(100vh - 60px)",
-            backgroundColor: green["50"],
+            bgcolor: "background.paper",
             overflowY: "hidden",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 0,

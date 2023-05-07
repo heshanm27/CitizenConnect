@@ -1,12 +1,22 @@
 import { CustomError, BadRequestError } from "../error/index.mjs";
 import News from "../models/news.model.mjs";
 
-export const getManyNews = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getManyNews = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "100", page = "1", cat }) => {
   try {
-    return await News.find()
+    const defaultFilters = {
+      title: { $regex: search, $options: "i" },
+    };
+
+    if (cat) {
+      defaultFilters["news_category"] = { $in: cat };
+    }
+    const news =  await News.find(defaultFilters)
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
+    
+    
+    return { news, total: news.length };
   } catch (error) {
     throw new CustomError(error.message);
   }

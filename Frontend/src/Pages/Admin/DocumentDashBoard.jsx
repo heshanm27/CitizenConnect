@@ -1,85 +1,51 @@
-import React from "react";
-
+import { Box, Chip, Container, IconButton, Tooltip, Typography } from "@mui/material";
+import React, { useMemo, useState } from "react";
+import MaterialReactTable from "material-react-table";
+import { useQuery } from "@tanstack/react-query";
+import EditIcon from "@mui/icons-material/Edit";
+import { getBudgets } from "../../Api/budget.api";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { getCertificates } from "../../Api/certificate.api";
 export default function DocumentDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-live-orders"], queryFn: () => fetch("/api/orders").then((res) => res.json()) });
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [docId, setDocId] = useState("");
-  const open = Boolean(anchorEl);
-  const navigate = useNavigate();
-  const handleClick = (event, id) => {
-    setAnchorEl(event.currentTarget);
-    setDocId(id);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-    navigate(`/admin/orders/${docId}`);
-  };
-
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-document"], queryFn: getCertificates });
+  console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "orderId", //access nested data with dot notation
-        header: "#ID",
-        enableGlobalFilter: false,
-      },
-      {
-        accessorFn: (row) => row.user.firstName + " " + row.user.lastName, //access nested data with dot notation
+        accessorFn: (row) => row.fname + " " + row.lname, //access nested data with dot notation
         header: "Customer Name",
         enableGlobalFilter: true,
       },
       {
-        accessorKey: "createdAt", //normal accessorKey
-        header: "Date",
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.createdAt).toLocaleDateString();
-        },
+        accessorKey: "email", //access nested data with dot notation
+        header: "Email",
+        enableGlobalFilter: false,
       },
       {
-        accessorKey: "status",
-        header: "Status",
-        Cell: ({ renderedCellValue, row }) => {
-          switch (row.original.status) {
-            case "new":
-              return <Chip label="New" color="error" />;
-            case "approved":
-              return <Chip label="Approved" color="success" />;
-            case "rejected":
-              return <Chip label="Rejected" color="error" />;
-            case "delivered":
-              return <Chip label="Delivered" color="success" />;
-            default:
-              return <Chip label="Pending" color="warning" />;
-          }
-        },
+        accessorKey: "certificate_type", //normal accessorKey
+        header: "Certificate Type",
+        enableGlobalFilter: false,
       },
+
       {
-        accessorKey: "totalPrice",
-        header: "Total Amount",
-        Cell: ({ renderedCellValue, row }) => {
-          return row.original.totalPrice?.toLocaleString?.("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-        },
+        accessorKey: "certificate_language", //normal accessorKey
+        header: "Certificate Language",
+        enableGlobalFilter: false,
       },
+
       {
-        accessorKey: "isPaid",
-        header: "Payment",
-        Cell: ({ renderedCellValue, row }) => {
-          return row.original.isPaid ? <Chip label="Paid" color="success" /> : <Chip label="UnPaid" color="default" />;
-        },
+        accessorKey: "number_of_copy", //normal accessorKey
+        header: "Number Of Copy",
+        enableGlobalFilter: false,
       },
     ],
     []
   );
-
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h3" sx={{ mt: 5, fontWeight: "bold" }}>
-          Live Order
+        <Typography variant="h3" sx={{ my: 5, fontWeight: "bold" }}>
+          Documents
         </Typography>
 
         <MaterialReactTable
@@ -100,9 +66,9 @@ export default function DocumentDashBoard() {
             isLoading,
             showAlertBanner: isError,
           }}
-          rowCount={data?.orders.length ?? 0}
+          rowCount={data?.length ?? 0}
           columns={columns}
-          data={data?.orders ?? []}
+          data={data ?? []}
           muiToolbarAlertBannerProps={
             isError
               ? {
@@ -115,26 +81,18 @@ export default function DocumentDashBoard() {
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
                 <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
-                  <MoreVertIcon />
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="left" title="Delete">
+                <IconButton color="error" onClick={(e) => handleClick(e, row?.original?._id)}>
+                  <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>
             </Box>
           )}
         />
       </Container>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem onClick={handleClose}>
-          <Edit /> Action
-        </MenuItem>
-      </Menu>
     </>
   );
 }

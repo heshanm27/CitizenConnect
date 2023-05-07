@@ -19,6 +19,8 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import { useState } from "react";
+import { VacanciesCategory } from "../../Components/Form/VacanciesForm";
+import VacanciesCard from "../../Components/Common/CustomCard/VacanciesCard";
 
 const cards = [1, 2, 3, 4, 5, 7, 8, 9];
 
@@ -50,7 +52,7 @@ export default function Vacancies() {
           </Typography>
         </Container>
 
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ mt: 5 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
               <List
@@ -63,54 +65,22 @@ export default function Vacancies() {
                   </ListSubheader>
                 }
               >
-                <ListItemButton>
-                  <ListItemIcon>
-                    <SendIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Sent mail" />
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <DraftsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Drafts" />
-                </ListItemButton>
-                <ListItemButton onClick={handleClick}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Inbox" />
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="Starred" />
-                    </ListItemButton>
-                  </List>
-                </Collapse>
+                {VacanciesCategory.map((item) => (
+                  <ListItemButton>
+                    <ListItemText primary={item} />
+                  </ListItemButton>
+                ))}
               </List>
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container spacing={4}>
                 {cards.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                      <CardMedia component="img" image="https://source.unsplash.com/random" alt="random" />
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          Heading
-                        </Typography>
-                        <Typography>This is a media card. You can use this section to describe the content.</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small">View</Button>
-                        <Button size="small">Edit</Button>
-                      </CardActions>
-                    </Card>
+                    <VacanciesCard
+                      data={{
+                        id: 1,
+                      }}
+                    />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>

@@ -15,8 +15,7 @@ export const getUsers = async ({ search = "", sortBy = "createdAt", order = "-1"
   return users;
 };
 
-export const getUser = async () => {
-  const { id } = req.params;
+export const getUser = async (id) => {
   try {
     const user = await userModel.findById(id);
 
@@ -30,7 +29,6 @@ export const getUser = async () => {
 };
 
 export const deleteUser = async (id) => {
-  const { id } = req.params;
   try {
     return await userModel.findByIdAndDelete(id);
   } catch (error) {
