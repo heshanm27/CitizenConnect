@@ -19,11 +19,7 @@ import {
   import { useFormik } from "formik";
   import { Editor } from "@tinymce/tinymce-react";
   import { useMutation, useQueryClient } from "@tanstack/react-query";
-  import { createBudget } from "../../Api/budget.api";
-  import Navbar from "../../Components/Common/Navbar/Navbar";
-  import Footer from "../../Components/Common/Footer/Footer";
   import { useDropzone } from "react-dropzone";
-  import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
   import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
 import { createProject } from "../../Api/project.api";
 export const VacanciesCategory = ["IT", "HR", "Human", "Worker"];

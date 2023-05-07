@@ -31,12 +31,13 @@ export default function DocumentDashBoard() {
         accessorKey: "certificate_language", //normal accessorKey
         header: "Certificate Language",
         enableGlobalFilter: false,
+        Cell: ({ renderedCellValue, row }) => row?.original?.certificate_language.map((item) => <Chip sx={{ m: 1 }} label={item} color="info" />),
       },
-
       {
-        accessorKey: "number_of_copy", //normal accessorKey
-        header: "Number Of Copy",
-        enableGlobalFilter: false,
+        accessorKey: "payment.isPaid",
+        header: "Payment status",
+        Cell: ({ renderedCellValue, row }) =>
+          row.original.payment.isPaid ? <Chip label="Approved" color="success" /> : <Chip label="Rejected" color="error" />,
       },
     ],
     []
