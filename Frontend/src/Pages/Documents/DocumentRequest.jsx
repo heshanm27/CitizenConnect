@@ -29,11 +29,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { createCertificate } from "../../Api/certificate.api";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 import OtpForm from "../../Components/Form/OtpForm";
+import { useParams } from "react-router-dom";
 
 const LANUAGES = ["English", "Sinhala", "TAMIL"];
 
 export default function DocumentRequest() {
   const theme = useTheme();
+  const { doc } = useParams();
   const [addDialog, setAddDialog] = useState(false);
   const queryClient = useQueryClient();
   const [notify, setNotify] = useState({
@@ -102,7 +104,7 @@ export default function DocumentRequest() {
         email: values.email,
         phone: values.phone,
         certificate_language: values.certificate_language,
-        certificate_type: "Birth",
+        certificate_type: doc,
       });
     },
   });
@@ -117,8 +119,8 @@ export default function DocumentRequest() {
       >
         <Paper variant="outlined" sx={{ p: 3 }}>
           <Box sx={{ my: 4 }}>
-            <Typography variant="h3">Requesting Birthertificate</Typography>
-            <Typography textAlign={"center"} variant="caption">
+            <Typography variant="h3">Requesting {doc.charAt(0).toUpperCase() + doc.slice(1)} Ceritificate</Typography>
+            <Typography textAlign={"center"} variant="caption" sx={{ mt: 5 }}>
               Still only avaliable digital version(PDF)
             </Typography>
           </Box>{" "}

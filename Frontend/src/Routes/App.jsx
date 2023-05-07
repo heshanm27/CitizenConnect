@@ -55,6 +55,7 @@ function App() {
           <Route path="vacancies/:id/apply" element={<ApplyVacancies />} />
           <Route path="/budget" element={<Budgets />} />
           <Route path="/budget/project/:id" element={<ProjectView />} />
+          <Route path="/documents" element={<Documents/>}/>
           <Route path="/documents/:doc" element={<DocumentRequest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
