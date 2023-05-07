@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import { getNews } from "../../Api/news.api";
 import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
-
+import { pascalCase } from "change-case";
 const cards = [1, 2, 3, 4, 5, 7, 8, 9];
 
 export default function News() {
@@ -81,7 +81,7 @@ export default function News() {
         {/* Hero unit */}
 
         <Container maxWidth="xl">
-          <Typography component="h1" sx={{ my: 5,fontWeight:700 }} variant="h2" align="center" color="text.primary" gutterBottom>
+          <Typography component="h1" sx={{ my: 5, fontWeight: 700 }} variant="h2" align="center" color="text.primary" gutterBottom>
             NEWS
           </Typography>
         </Container>
@@ -105,7 +105,7 @@ export default function News() {
                     key={item}
                     onClick={() => handleCategoryChange(item)}
                   >
-                    <ListItemText primary={item} />
+                    <ListItemText primary={pascalCase(item)} />
                   </ListItemButton>
                 ))}
                 {selectedCat ? (
@@ -119,7 +119,7 @@ export default function News() {
               <Grid container spacing={4}>
                 {cards.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={"text news"} title={"test news"} onClick={()=>{}} />
+                    <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={"text news"} title={"test news"} onClick={() => {}} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
