@@ -25,6 +25,7 @@ import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
+import { createProject } from "../../Api/project.api";
 export default function ProjectForm({ setNotify, setDialogOff }) {
   const theme = useTheme();
   const [richText, setRichText] = useState("");
@@ -68,16 +69,16 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
   };
 
   const { isLoading, isError, error, mutate } = useMutation({
-    mutationFn: createBudget,
+    mutationFn: createProject,
     onSuccess: (value) => {
-      // setNotify({
-      //   isOpen: true,
-      //   message: "Submit success",
-      //   title: "Success",
-      //   type: "success",
-      // });
-      // setDialogOff();
-      queryClient.invalidateQueries(["admin-budgets"]);
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-project"]);
     },
   });
   const validationSchema = Yup.object().shape({
@@ -105,9 +106,19 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
         allocated_budget: values.allocated_budget,
         spended_budget: values.spended_budget,
         unit: values.unit,
+        year_of_allocation: values.year_of_allocation,
         project_owner: values.project_owner,
         description: richText,
-        thumbnail: selectedFiles,
+        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+      });
+      console.log({
+        title: values.title,
+        allocated_budget: values.allocated_budget,
+        spended_budget: values.spended_budget,
+        unit: values.unit,
+        project_owner: values.project_owner,
+        description: richText,
+        thumbnail: selectedFiles.length > 1 ? selectedFiles[0] : selectedFiles,
       });
     },
   });
@@ -116,10 +127,12 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
       <Container maxWidth="lg">
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} spacing={2}>
+            <InputLabel required id="demo-simple-select-label">
+              Project Title
+            </InputLabel>
             <TextField
-              sx={{ my: 3 }}
+              sx={{ my: 1 }}
               name="title"
-              label="Project Title"
               fullWidth
               inputProps={{ min: 1 }}
               error={Boolean(errors.title)}
@@ -135,7 +148,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
               </InputLabel>
               <FormControl fullWidth>
                 <Select
-                  name="year"
+                  name="year_of_allocation"
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -144,8 +157,8 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
                     },
                   }}
                   displayEmpty
-                  error={Boolean(errors.year)}
-                  value={values.year}
+                  error={Boolean(errors.year_of_allocation)}
+                  value={values.year_of_allocation}
                   onBlur={handleBlur}
                   //   onChange={(option) => {
                   //     setFieldValue("year", option.value);
@@ -193,7 +206,21 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
           </Grid>
 
           <Grid item xs={12} md={6} spacing={2}>
-            <Box>
+            <InputLabel required id="demo-simple-select-label">
+              Project Owner
+            </InputLabel>
+            <TextField
+              sx={{ my: 1 }}
+              name="project_owner"
+              fullWidth
+              inputProps={{ min: 1 }}
+              error={Boolean(errors.project_owner)}
+              value={values.project_owner}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={errors.project_owner}
+            />
+            <Box sx={{ my: 3 }}>
               <InputLabel sx={{ mb: 2 }} required id="demo-simple-select-label">
                 Allocated Budget
               </InputLabel>
@@ -229,7 +256,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
 
           <Grid item xs={12} md={12}>
             <Box sx={{ mb: 5 }}>
-              <Typography sx={{ mb: 2 }}>Cover Letter</Typography>
+              <Typography sx={{ mb: 2 }}>Project Description</Typography>
               <Editor
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 onChange={handleEditorChange}
@@ -269,7 +296,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
             </Box>
           </Grid>
           <Grid item xs={12} md={12}>
-            <Typography sx={{ mb: 2 }}>Upload CV</Typography>
+            <Typography sx={{ mb: 2 }}>Project thumbnail</Typography>
             <Box
               sx={{
                 border: `2px dashed ${isDragActive ? theme.palette.secondary.main : theme.palette.primary.main}`,
@@ -310,7 +337,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
           </Grid>
           <Grid item xs={12} md={12}>
             {isError && (
-              <Typography align="center" color="red">
+              <Typography sx={{ bgcolor: theme.palette.background.paper }} align="center" color="red">
                 {error.message}
               </Typography>
             )}

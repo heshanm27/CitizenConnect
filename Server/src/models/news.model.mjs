@@ -6,7 +6,7 @@ const NewsSchema = new Schema(
     short_description: { type: String, required: true },
     description: { type: String, required: true },
     thumbnail: { type: String },
-    news_type: { type: [String] },
+    news_category: { type: [String] },
   },
   {
     timestamps: true,

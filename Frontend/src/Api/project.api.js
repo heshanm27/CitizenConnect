@@ -24,7 +24,12 @@ export const getProject = async (id) => {
 
 export const createProject = async (data) => {
   try {
-    const reponse = await apiClient.post(`/${basePath}`, data);
+    console.log(data);
+    const reponse = await apiClient.post(`/${basePath}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

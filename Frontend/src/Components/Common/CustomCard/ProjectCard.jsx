@@ -1,20 +1,25 @@
-import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 
-export default function ProjectCard() {
+export default function ProjectCard({ title, subDiscription, img,onClick }) {
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardMedia component="img" loading="lazy" image="https://source.unsplash.com/random" alt="random" />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5" component="h2">
-          Heading
-        </Typography>
-        <Typography>This is a media card. You can use this section to describe the content.</Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">View</Button>
-        <Button size="small">Edit</Button>
-      </CardActions>
+    <Card elevation={3} sx={{ height: "500px", display: "flex", flexDirection: "column" }}>
+      <CardActionArea onClick={onClick}>
+        <CardMedia component="img" loading="lazy" image={img} alt="random" />
+        <CardContent sx={{ height: "200px", overflow: "hidden", my: 1, p: 2 }}>
+          <Typography gutterBottom variant="h5" component="h2">
+            {title}
+          </Typography>
+          <Typography textOverflow={"ellipsis"} sx={{ overflow: "hidden" }}>
+            {subDiscription}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button fullWidth size="small">
+            View
+          </Button>
+        </CardActions>
+      </CardActionArea>
     </Card>
   );
 }

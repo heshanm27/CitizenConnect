@@ -14,23 +14,20 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBudget } from "../../Api/budget.api";
-import Navbar from "../../Components/Common/Navbar/Navbar";
-import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
-import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
+import { createNews } from "../../Api/news.api";
 
-const NEWSCategoryTypes = ["hot", "breaking", "test"];
+export const NEWSCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
 
 export default function NewsForm({ setNotify, setDialogOff }) {
   const theme = useTheme();
-  const [richText, setRichText] = useState("");
+  const [richText, setRichText] = useState("sdsdsd");
   const dropzoneRef = useRef(null);
   const editorRef = useRef(null);
   const queryClient = useQueryClient();
@@ -65,39 +62,45 @@ export default function NewsForm({ setNotify, setDialogOff }) {
     }
   };
 
+  // useEffect(() => {
+  
+  //     editorRef.current.setContent("<p>Hello world!</p>");
+  
+  // }, []);
+
   const { isLoading, isError, error, mutate } = useMutation({
-    mutationFn: createBudget,
+    mutationFn: createNews,
     onSuccess: (value) => {
-      // setNotify({
-      //   isOpen: true,
-      //   message: "Submit success",
-      //   title: "Success",
-      //   type: "success",
-      // });
-      // setDialogOff();
-      queryClient.invalidateQueries(["admin-budgets"]);
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-news"]);
     },
   });
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("News title is required"),
     short_description: Yup.string().required("News short discription is required"),
-    news_type: Yup.array().of(Yup.string()).min(1, "At least one news type is required"),
+    news_category: Yup.array().of(Yup.string()).min(1, "At least one news type is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
       title: "",
       short_description: "",
-      news_type: [""],
+      news_category: [""],
     },
     validationSchema,
     onSubmit: (values) => {
       mutate({
-        title: "",
-        short_description: "",
+        title: values.title,
+        short_description: values.short_description,
         description: richText,
-        news_type: "",
-        thumbnail: selectedFiles,
+        news_category: values.news_category,
+        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
       });
     },
   });
@@ -125,7 +128,7 @@ export default function NewsForm({ setNotify, setDialogOff }) {
               </InputLabel>
               <FormControl fullWidth>
                 <Select
-                  name="news_type"
+                  name="news_category"
                   multiple
                   MenuProps={{
                     PaperProps: {
@@ -135,8 +138,8 @@ export default function NewsForm({ setNotify, setDialogOff }) {
                     },
                   }}
                   displayEmpty
-                  error={Boolean(errors.news_type)}
-                  value={values.news_type}
+                  error={Boolean(errors.news_category)}
+                  value={values.news_category}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
@@ -149,7 +152,7 @@ export default function NewsForm({ setNotify, setDialogOff }) {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText error={Boolean(errors.news_type)}>{errors.news_type ? errors.news_type : "Enter budget year"}</FormHelperText>
+                <FormHelperText error={Boolean(errors.news_category)}>{errors.news_category ? errors.news_category : "Select News Category"}</FormHelperText>
               </FormControl>
             </Box>
           </Grid>

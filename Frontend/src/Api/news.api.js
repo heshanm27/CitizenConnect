@@ -2,9 +2,11 @@ import apiClient from "./axios.default";
 
 const basePath = "news";
 
-export const getNews = async () => {
+export const getNews = async (filter) => {
   try {
-    const reponse = await apiClient.get(`/${basePath}`);
+    const reponse = await apiClient.get(`/${basePath}`, {
+      params: filter,
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -22,7 +24,11 @@ export const getOneNews = async (id) => {
 
 export const createNews = async (data) => {
   try {
-    const reponse = await apiClient.post(`/${basePath}`, data);
+    const reponse = await apiClient.post(`/${basePath}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

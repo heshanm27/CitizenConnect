@@ -32,7 +32,7 @@ export default function ProjectDashBoard() {
   } = useMutation({
     mutationFn: deleteBudget,
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-budgets"]);
+      queryClient.invalidateQueries(["admin-project"]);
       setConfirmDialog(false);
       setNotify({
         isOpen: true,

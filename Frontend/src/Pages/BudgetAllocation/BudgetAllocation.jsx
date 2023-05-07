@@ -4,19 +4,19 @@ import Container from "@mui/material/Container";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
 import Slider from "react-slick";
-
+import Lottie from "lottie-react";
 // Import css files
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
 import BudgetDateCard from "../../Components/Common/CustomCard/BudgetDateCard";
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Pagination, Stack } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Pagination, Skeleton, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getBudgets } from "../../Api/budget.api";
 import { getProjects } from "../../Api/project.api";
 import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
 import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
-
+import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
 export default function Budgets() {
   const [open, setOpen] = useState(true);
   const [selectedData, setSelectedData] = useState(null);
@@ -85,6 +85,8 @@ export default function Budgets() {
           </Typography>
 
           <Slider {...settings}>
+            {isLoading &&
+              [1, 2, 3, 4, 5].map((item) => <Skeleton key={item} sx={{ mr: 2, ml: 5 }} animation={"wave"} variant="rectangular" width={80} height={80} />)}
             {data?.map((item) => (
               <BudgetDateCard key={item} data={item} selectedYear={selectedData} handleSeletedYear={handleSeletedYear} />
             ))}
@@ -92,17 +94,32 @@ export default function Budgets() {
         </Container>
 
         <Container maxWidth="lg" sx={{ mt: 5 }}>
-          <Typography variant="h4" align="left" color="text.primary" gutterBottom>
-            {selectedData?.year} Budget Allocation
-          </Typography>
-          <Stack direction="row" spacing={2}>
-            <Typography>Allocated Budget {selectedData?.allocated_budget + " " + selectedData?.unit}</Typography>
-            <Typography>Spended Budget{selectedData?.spended_budget + " " + selectedData?.unit}</Typography>
-          </Stack>
+          {isLoading && (
+            <Stack>
+              <Skeleton animation={"wave"} variant="rectangular" width={380} height={80} />
+              <br />
+              <Skeleton animation={"wave"} variant="rectangular" width={380} height={80} />
+            </Stack>
+          )}
+          {!isLoading && (
+            <>
+              <Typography variant="h4" align="left" color="text.primary" gutterBottom>
+                {selectedData?.year} Budget Allocation
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography>Allocated Budget {selectedData?.allocated_budget + " " + selectedData?.unit}</Typography>
+                <Typography>Spended Budget{selectedData?.spended_budget + " " + selectedData?.unit}</Typography>
+              </Stack>
+            </>
+          )}
 
-          <Box sx={{ mt: 5 }}>
+          <Box sx={{ mt: 5, height: "60vh" }}>
             <Typography variant="h4" align="left" color="text.primary" sx={{ my: 5 }}>
-              {projectData?.projetData.length == 0 ? null : `Our Projects In ${selectedData?.year}`}
+              {isLoading ? (
+                <Skeleton animation={"wave"} variant="rectangular" width={380} height={80} />
+              ) : projectData?.projetData.length == 0 ? null : (
+                `Our Projects In ${selectedData?.year}`
+              )}
             </Typography>
             <Grid container spacing={4}>
               {isLoading ||
@@ -115,7 +132,8 @@ export default function Budgets() {
               {projectData?.projetData.length == 0 ? <NoProject /> : null}
               {projectData?.projetData.map((card) => (
                 <Grid item key={card} xs={12} sm={6} md={4}>
-                  <ProjectCard />
+                  {console.log()}
+                  <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => {}} />
                 </Grid>
               ))}
               <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
@@ -139,7 +157,8 @@ export default function Budgets() {
 
 function NoProject() {
   return (
-    <Stack sx={{ width: "100%", height: "40vh", my: 5 }}>
+    <Stack sx={{ width: "100%", height: "40vh", my: 5 }} justifyContent={"center"} alignItems={"center"}>
+      <Lottie style={{ width: "50%" }} animationData={NotDataFound} loop={true} />
       <Typography variant="h4" align="center">
         No Project to Show
       </Typography>

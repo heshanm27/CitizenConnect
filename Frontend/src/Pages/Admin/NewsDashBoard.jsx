@@ -9,7 +9,7 @@ import NewsForm from "../../Components/Form/NewsForm";
 import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
-import { getNews } from "../../Api/news.api";
+import { deleteNews, getNews } from "../../Api/news.api";
 
 export default function NewsDashBoard() {
   const theme = useTheme();
@@ -29,9 +29,9 @@ export default function NewsDashBoard() {
     error: deleteError,
     mutate,
   } = useMutation({
-    mutationFn: deleteBudget,
+    mutationFn: deleteNews,
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-budgets"]);
+      queryClient.invalidateQueries(["admin-news"]);
       setConfirmDialog(false);
       setNotify({
         isOpen: true,
@@ -63,9 +63,21 @@ export default function NewsDashBoard() {
         enableGlobalFilter: false,
       },
       {
-        accessorKey: "news_type", //normal accessorKey
-        header: "News Types",
+        accessorKey: "createdAt", //normal accessorKey
+        header: "News published date",
         enableGlobalFilter: false,
+        Cell: ({ renderedCellValue, row }) => {
+          return new Date(row.original.createdAt).toLocaleDateString();
+        },
+      },
+      {
+        accessorKey: "news_category", //normal accessorKey
+        header: "News categories",
+        enableGlobalFilter: false,
+        Cell: ({ renderedCellValue, row }) => {
+          // console.log("news types",news_category);
+          return new Date(row.original.createdAt).toLocaleDateString();
+        },
       },
     ],
     []
@@ -99,9 +111,9 @@ export default function NewsDashBoard() {
             isLoading,
             showAlertBanner: isError,
           }}
-          rowCount={data?.length ?? 0}
+          rowCount={data?.news?.length ?? 0}
           columns={columns}
-          data={data ?? []}
+          data={data?.news ?? []}
           renderTopToolbarCustomActions={() => (
             <Button color="secondary" onClick={() => setAddDialog(true)} variant="contained">
               Add News

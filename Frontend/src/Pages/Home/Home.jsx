@@ -3,14 +3,16 @@ import React from "react";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
 import PORTFOLIOSVG from "../../Assets/undraw_portfolio_update_re_jqnp.svg";
+import Lottie from "lottie-react";
+import SearchData from "../../Assets/lottie/78999-data-scanning.json";
 export default function Home() {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg">
-        <Grid container spacing={2} justifyContent={"center"} alignItems={"center"}>
+      <Container maxWidth="lg" sx={{ height: "80vh", justifyContent: "center", alignItems: "center", display: "flex" }}>
+        <Grid container spacing={2} sx={{ flexDirection: { xs: "column-reverse", md: "row" } }} justifyContent={"center"} alignItems={"center"}>
           <Grid item sm={12} md={6}>
-            <Paper>
+            <Paper variant="outlined" sx={{ borderRadius: "20px" }}>
               <Box sx={{ p: 3 }}>
                 <Typography variant="h3" sx={{ fontWeight: "bold", mb: 5, display: "inline" }}>
                   Welcome!
@@ -28,7 +30,8 @@ export default function Home() {
             </Paper>
           </Grid>
           <Grid item sm={12} md={6}>
-            <img src={PORTFOLIOSVG} alt="portfolio" />
+            <Lottie animationData={SearchData} loop={true} />
+            {/* <img src={PORTFOLIOSVG} alt="portfolio" /> */}
           </Grid>
         </Grid>
       </Container>

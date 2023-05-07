@@ -29,6 +29,7 @@ export const getProject = async (req, res) => {
 
 export const createProject = async (req, res) => {
   try {
+    console.log("file tem path", req.files);
     console.log("file tem path", req.files.thumbnail);
 
     const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "project");
@@ -43,7 +44,9 @@ export const createProject = async (req, res) => {
 
 export const updateProject = async (req, res) => {
   try {
-    const project = await ProjectService.update(req.params.id, req.body);
+    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "project");
+    const upproject = { ...req.body, thumbnail: uploadedResponse };
+    const project = await ProjectService.update(req.params.id, upproject);
     res.status(200).json(project);
   } catch (error) {
     res.status(404).json({ message: error.message });

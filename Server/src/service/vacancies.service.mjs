@@ -2,11 +2,16 @@ import vacanciesModel from "../models/vacancies.model.mjs";
 import { CustomError, BadRequestError } from "../error/index.mjs";
 export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
   try {
-    return await vacanciesModel
-      .find({})
+    const query = {};
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    const vacancies =  await vacanciesModel
+      .find(query)
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
+    return { vacancies, total: vacancies.length };
   } catch (error) {
     throw new CustomError(error.message);
   }
