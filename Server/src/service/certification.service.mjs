@@ -1,8 +1,10 @@
 import { CustomError, BadRequestError } from "../error/index.mjs";
 import Certificate from "../models/certificate.model.mjs";
 
-export const getCertificates = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getCertificates = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
+
+
     return await Certificate.find()
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))

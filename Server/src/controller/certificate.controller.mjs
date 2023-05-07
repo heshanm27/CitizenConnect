@@ -2,7 +2,14 @@ import * as CertificateService from "../service/certification.service.mjs";
 
 export const getCertificates = async (req, res) => {
   try {
-    const certificates = await CertificateService.getCertificates();
+    const certificates = await CertificateService.getCertificates({
+      limit: req.query.limit,
+      skip: req.query.skip,
+      page: req.query.page,
+      search: req.query.search,
+      order: req.query.order,
+      sortBy: req.query.sortBy,
+    });
     res.status(200).json(certificates);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -20,9 +27,9 @@ export const getCertificate = async (req, res) => {
 
 export const addCertificate = async (req, res) => {
   const certificate = req.body;
-
+console.log(certificate)
   try {
-    const newCertificate = await CertificateService.addCertificate(certificate);
+    const newCertificate = await CertificateService.createCertificate(certificate);
     res.status(201).json(newCertificate);
   } catch (error) {
     res.status(409).json({ message: error.message });

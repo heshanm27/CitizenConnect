@@ -19,6 +19,7 @@ import ApplyVacancies from "../Pages/Vacancies/ApplyVacancies";
 import VacanciesView from "../Pages/Vacancies/VacanciesView";
 import NewsViews from "../Pages/News/NewsViews";
 import { useSelector } from "react-redux";
+import DocumentRequest from "../Pages/Documents/DocumentRequest";
 
 function App() {
   const { mode } = useSelector((state) => state.modeSlice);
@@ -50,9 +51,10 @@ function App() {
           <Route path="/news/:id" element={<NewsViews />} />
           <Route path="/vacancies" element={<Vacancies />} />
           <Route path="/vacancies/:id" element={<VacanciesView />} />
-          <Route path="/vacancies/:id/apply" element={<ApplyVacancies />} />
+          <Route path="documents" element={<ApplyVacancies />} />
           <Route path="/budget" element={<Budgets />} />
           <Route path="/documents" element={<Documents />} />
+          <Route path="/documents/:doc" element={<DocumentRequest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Paper>
