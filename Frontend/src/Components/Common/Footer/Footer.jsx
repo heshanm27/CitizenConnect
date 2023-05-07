@@ -23,7 +23,7 @@ export default function Footer() {
         },
         {
           name: "Budget Allocation",
-          url: "/contact",
+          url: "/budget",
         },
         {
           name: "Request Documents",
@@ -46,6 +46,7 @@ export default function Footer() {
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 10 }}>
+        <Divider />
         <Stack sx={{ p: 2 }} direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
           <Grid container spacing={2}>
             {footerData.map((item) => (
@@ -55,7 +56,7 @@ export default function Footer() {
                   <Divider />
                   <List>
                     {item.links.map((link, i) => (
-                      <ListItem disablePadding sx={{ pt: 1, pb: 1, pr: 0, pl: 0, justifyContent: "center", alignItems: "center" }} key={uuidv4()}>
+                      <ListItem disablePadding sx={{ pt: 1, pb: 1, pr: 0, pl: 0 }} key={uuidv4()}>
                         {link?.icon && <ListItemIcon sx={{ minWidth: "0px", pr: 1 }}>{link?.icon}</ListItemIcon>}
                         <FooterLink name={link.name} url={link.url} />
                       </ListItem>

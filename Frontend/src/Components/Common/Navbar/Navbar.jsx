@@ -17,7 +17,7 @@ export default function Navbar() {
     { label: "Home", link: "/" },
     { label: "News", link: "/news" },
     { label: "Vacancies", link: "/vacancies" },
-    { label: "Budget Allocation", link: "/contact" },
+    { label: "Budget Allocation", link: "/budget" },
     { label: "Request Documents", link: "/documents" },
   ];
 
@@ -53,7 +53,6 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
       <Box sx={{ ...theme.mixins.toolbar, mb: 5 }}></Box>
-      <Box sx={{ ...theme.mixins.toolbar }}></Box>
     </>
   );
 }
