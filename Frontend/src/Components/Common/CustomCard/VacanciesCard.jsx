@@ -13,6 +13,14 @@ export default function VacanciesCard({ data }) {
             Heading
           </Typography>
           <Typography>This is a media card. You can use this section to describe the content.</Typography>
+          <Typography variant="body2" color="text.secondary">
+          <div
+                dangerouslySetInnerHTML={{
+                  __html:"<p>This is a media card. You can use this section to describe the content</p>",
+                }}
+              ></div>
+          
+          </Typography>
         </CardContent>
         <CardActions>
           <Button size="small">Apply</Button>

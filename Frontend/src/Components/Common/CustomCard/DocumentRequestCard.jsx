@@ -19,7 +19,12 @@ export default function DocumentRequestCard({
             {title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-           {discription}
+          <div
+                dangerouslySetInnerHTML={{
+                  __html:{discription},
+                }}
+              ></div>
+          
           </Typography>
           <Button sx={{ mt: 3 }} variant="outlined" fullWidth>
             Request Now

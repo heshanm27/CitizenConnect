@@ -9,6 +9,9 @@ export const getBudgets = async ({ search = "", sortBy = "year", order = "-1", l
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
+    
+      
+    return {}
   } catch (error) {
     throw new BadRequestError(error.message);
   }

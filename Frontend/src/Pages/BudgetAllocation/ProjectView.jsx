@@ -46,11 +46,11 @@ export default function ProjectView() {
                 }}
               ></div>
             </Grid>
-            <Grid item xs={2} justifyContent={"end"} alignItems={"end"}>
+            {/* <Grid item xs={2} justifyContent={"end"} alignItems={"end"}>
               <Button endIcon={<EmailIcon />} variant="contained" fullWidth onClick={() => navigate("/vacancies/:id/apply")}>
                 Apply
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Stack>
       </Container>

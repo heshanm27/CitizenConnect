@@ -11,7 +11,16 @@ export const getVacancies = async ({ search = "", sortBy = "createdAt", order = 
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
-    return { vacancies, total: vacancies.length };
+    
+      const totalDocCount = await vacanciesModel.countDocuments(query)
+      .sort({
+        [sortBy]: order,
+      })
+      .count();
+
+    const total = Math.ceil(totalDocCount / limit);
+
+    return { vacancies, total: total };
   } catch (error) {
     throw new CustomError(error.message);
   }

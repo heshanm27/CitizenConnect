@@ -17,8 +17,8 @@ import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import { getNews } from "../../Api/news.api";
 import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
 import { pascalCase } from "change-case";
-const cards = [1, 2, 3, 4, 5, 7, 8, 9];
-
+import Lottie from "lottie-react";
+import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
 export default function News() {
   const theme = useTheme();
   const [selectedCat, setSelectedCat] = useState("");
@@ -86,7 +86,7 @@ export default function News() {
           </Typography>
         </Container>
 
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{ height: "80vh" }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
               <List
@@ -117,13 +117,23 @@ export default function News() {
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container spacing={4}>
-                {cards.map((card) => (
+              {isLoading &&
+                  [1, 2, 3, 4, 5, 6].map((item) => (
+                    <Grid item key={item} xs={12} sm={6} md={4}>
+                      <SkeltonCard />
+                    </Grid>
+                ))
+              }
+                {
+                  data?.news.length === 0 ?<NoNews/> : null
+                }
+                {data?.news.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
                     <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={"text news"} title={"test news"} onClick={() => {}} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
-                  <Pagination color="primary" page={page} count={10} variant="outlined" shape="rounded" onChange={handlePageChange} />
+                  <Pagination color="primary" page={page} count={data?.total ?? 0} variant="outlined" shape="rounded" onChange={handlePageChange} />
                 </Stack>
               </Grid>
             </Grid>
@@ -138,9 +148,10 @@ export default function News() {
 
 function NoNews() {
   return (
-    <Stack sx={{ width: "100%", height: "40vh", my: 5 }}>
+    <Stack sx={{ width: "100%", height: "40vh", my: 5 }} justifyContent={"center"} alignItems={"center"}>
+      <Lottie style={{ width: "50%" }} animationData={NotDataFound} loop={true} />
       <Typography variant="h4" align="center">
-        No News to Show
+        No Project to Show
       </Typography>
     </Stack>
   );

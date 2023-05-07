@@ -17,10 +17,12 @@ import { getProjects } from "../../Api/project.api";
 import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
 import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
 import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
+import { useNavigate } from "react-router-dom";
 export default function Budgets() {
   const [open, setOpen] = useState(true);
   const [selectedData, setSelectedData] = useState(null);
   const [page, setPage] = useState(1);
+  const navigate  =useNavigate()
   const [filter, setFilter] = useState({
     limit: 12,
     order: -1,
@@ -133,7 +135,7 @@ export default function Budgets() {
               {projectData?.projetData.map((card) => (
                 <Grid item key={card} xs={12} sm={6} md={4}>
                   {console.log()}
-                  <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => {}} />
+                  <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => navigate(`/budget/project/${card?._id}`)} />
                 </Grid>
               ))}
               <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
