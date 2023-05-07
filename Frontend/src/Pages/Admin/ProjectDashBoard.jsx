@@ -139,7 +139,13 @@ export default function ProjectDashBoard() {
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Delete">
-                <IconButton color="error" onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    setConfirmDialog(true);
+                    setDocID(row?.original?._id);
+                  }}
+                >
                   <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>

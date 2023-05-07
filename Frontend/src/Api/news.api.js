@@ -37,7 +37,11 @@ export const createNews = async (data) => {
 
 export const updateNews = async (id, data) => {
   try {
-    const response = await apiClient.patch(`/${basePath}/${id}`, data);
+    const response = await apiClient.patch(`/${basePath}/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);

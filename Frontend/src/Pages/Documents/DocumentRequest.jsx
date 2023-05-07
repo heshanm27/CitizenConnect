@@ -27,11 +27,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { createCertificate } from "../../Api/certificate.api";
+import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import OtpForm from "../../Components/Form/OtpForm";
 
 const LANUAGES = ["English", "Sinhala", "TAMIL"];
 
 export default function DocumentRequest() {
   const theme = useTheme();
+  const [addDialog, setAddDialog] = useState(false);
   const queryClient = useQueryClient();
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -119,7 +122,7 @@ export default function DocumentRequest() {
               Still only avaliable digital version(PDF)
             </Typography>
           </Box>{" "}
-          <Grid container spacing={2}>
+          <Grid container spacing={2} justifyContent={"center"} alignItems={"center"}>
             <Grid item xs={12} md={6} spacing={2}>
               <TextField
                 sx={{ my: 3 }}
@@ -262,12 +265,15 @@ export default function DocumentRequest() {
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={6}>
               {isError && (
                 <Typography align="center" color="red">
                   {error.message}
                 </Typography>
               )}
+              {/* <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={() => setAddDialog(true)}>
+                {" Verify Email"}
+              </Button> */}
               <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
                 {isLoading ? <CircularProgress /> : " Submit"}
               </Button>
@@ -275,6 +281,9 @@ export default function DocumentRequest() {
           </Grid>
         </Paper>
         <CustomSnackBar notify={notify} setNotify={setNotify} />
+        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Project"}>
+          <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
       </Container>
 
       <Footer />

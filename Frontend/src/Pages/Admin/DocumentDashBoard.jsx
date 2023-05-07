@@ -1,14 +1,54 @@
 import { Box, Chip, Container, IconButton, Tooltip, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { getCertificates } from "../../Api/certificate.api";
+import { deleteCertificate, getCertificates } from "../../Api/certificate.api";
+import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
+import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 export default function DocumentDashBoard() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-document"], queryFn: getCertificates });
   console.log(error, data, isLoading, isError);
+  const [docID, setDocID] = useState("");
+  const queryClient = useQueryClient();
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "error",
+    title: "",
+  });
+  const handleDelete = () => {
+    mutate(docID);
+  };
+  
+  const {
+    isLoading: deleteLoading,
+    error: deleteError,
+    mutate,
+  } = useMutation({
+    mutationFn: deleteCertificate,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-budgets"]);
+      setConfirmDialog(false);
+      setNotify({
+        isOpen: true,
+        message: "Delete success",
+        title: "Success",
+        type: "success",
+      });
+    },
+    onError: () => {
+      setNotify({
+        isOpen: true,
+        message: "Action Failed",
+        title: deleteError?.message,
+        type: "error",
+      });
+    },
+  });
   const columns = useMemo(
     () => [
       {
@@ -33,12 +73,12 @@ export default function DocumentDashBoard() {
         enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => row?.original?.certificate_language.map((item) => <Chip sx={{ m: 1 }} label={item} color="info" />),
       },
-      {
-        accessorKey: "payment.isPaid",
-        header: "Payment status",
-        Cell: ({ renderedCellValue, row }) =>
-          row.original.payment.isPaid ? <Chip label="Approved" color="success" /> : <Chip label="Rejected" color="error" />,
-      },
+      // {
+      //   accessorKey: "payment.isPaid",
+      //   header: "Payment status",
+      //   Cell: ({ renderedCellValue, row }) =>
+      //     row.original.payment.isPaid ? <Chip label="Approved" color="success" /> : <Chip label="Rejected" color="error" />,
+      // },
     ],
     []
   );
@@ -86,12 +126,25 @@ export default function DocumentDashBoard() {
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Delete">
-                <IconButton color="error" onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton color="error"   onClick={(e) => {
+                    setConfirmDialog(true);
+                    setDocID(row?.original?._id);
+                  }}>
                   <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>
             </Box>
           )}
+        />
+
+ <CustomSnackBar notify={notify} setNotify={setNotify} />
+<ConfirmDialog
+          isOpen={() => setConfirmDialog(false)}
+          loading={deleteLoading}
+          onConfirm={handleDelete}
+          open={confirmDialog}
+          subTitle={"This action can't be undone"}
+          title={"Delete"}
         />
       </Container>
     </>
