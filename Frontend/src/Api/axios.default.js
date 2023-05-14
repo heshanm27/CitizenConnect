@@ -2,9 +2,9 @@ import axios from "axios";
 import store from "../Redux/store";
 import { logOut } from "../Redux/auth.slice";
 // import { logOut } from "../Redux/auth/authslice";
-
+console.log("env",import.meta.env.BASE_URL)
 export const apiClient = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

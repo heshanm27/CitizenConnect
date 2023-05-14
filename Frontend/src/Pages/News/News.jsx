@@ -1,8 +1,3 @@
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -19,6 +14,7 @@ import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
 import { pascalCase } from "change-case";
 import Lottie from "lottie-react";
 import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
+import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
 export default function News() {
   const theme = useTheme();
   const [selectedCat, setSelectedCat] = useState("");
@@ -86,7 +82,7 @@ export default function News() {
           </Typography>
         </Container>
 
-        <Container maxWidth="xl" sx={{ height: "80vh" }}>
+        <Container maxWidth="xl" sx={{ minHeight: "80vh" }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
               <List
@@ -117,19 +113,16 @@ export default function News() {
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container spacing={4}>
-              {isLoading &&
+                {isLoading &&
                   [1, 2, 3, 4, 5, 6].map((item) => (
                     <Grid item key={item} xs={12} sm={6} md={4}>
                       <SkeltonCard />
                     </Grid>
-                ))
-              }
-                {
-                  data?.news.length === 0 ?<NoNews/> : null
-                }
+                  ))}
+                {data?.news.length === 0 ? <NoNews /> : null}
                 {data?.news.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={"text news"} title={"test news"} onClick={() => {}} />
+                    <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={card?.short_description} title={card?.title} onClick={() => {}} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>

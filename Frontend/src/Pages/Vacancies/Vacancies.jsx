@@ -62,6 +62,7 @@ export default function Vacancies() {
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+  console.log(data)
   return (
     <>
       <Navbar />
