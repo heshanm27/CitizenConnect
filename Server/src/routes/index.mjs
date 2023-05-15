@@ -9,10 +9,15 @@ import NewsRoute from "./news.routes.mjs";
 import ProjectRoute from "./project.routes.mjs";
 import UserRoute from "./user.routes.mjs";
 import VacanciesRoute from "./vacancies.routes.mjs";
-
+import OtpRoute from "./otp.routes.mjs";
 export default function routes(app) {
   const basePath = "/api/v1";
   console.log("filehome rou", process.env.CLOUDINARY_NAME);
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      server: "Server Is running",
+    });
+  });
   app.get(`${basePath}/`, (req, res) => {
     res.status(200).json({
       server: "Server Is running",
@@ -31,6 +36,7 @@ export default function routes(app) {
   app.use(`${basePath}/cv`, CvRoute);
   app.use(`${basePath}/certificate`, CertificateRoute);
   app.use(`${basePath}/vacancies`, VacanciesRoute);
+  app.use(`${basePath}/otp`, OtpRoute);
 
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);

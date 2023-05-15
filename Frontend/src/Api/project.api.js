@@ -38,7 +38,11 @@ export const createProject = async (data) => {
 
 export const updateProject = async (id, data) => {
   try {
-    const response = await apiClient.patch(`/${basePath}/${id}`, data);
+    const response = await apiClient.patch(`/${basePath}/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);

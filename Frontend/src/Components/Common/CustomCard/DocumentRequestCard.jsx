@@ -1,17 +1,30 @@
 import { Button, Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function DocumentRequestCard() {
+export default function DocumentRequestCard({
+  imgUrl,
+    title,
+    discription,
+    link
+
+}) {
+  const navigate = useNavigate()
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia component="img" height="140" image="/static/images/cards/contemplative-reptile.jpg" alt="green iguana" />
+      <CardActionArea onClick={()=>navigate(link)}>
+        <CardMedia component="img" height="140" image={imgUrl} alt="green iguana" />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            Birth Certificate
+            {title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica
+          <div
+                dangerouslySetInnerHTML={{
+                  __html:{discription},
+                }}
+              ></div>
+          
           </Typography>
           <Button sx={{ mt: 3 }} variant="outlined" fullWidth>
             Request Now

@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg" sx={{ height: "80vh", justifyContent: "center", alignItems: "center", display: "flex" }}>
+      <Container maxWidth="lg" sx={{ minHeight: "80vh", justifyContent: "center", alignItems: "center", display: "flex" }}>
         <Grid container spacing={2} sx={{ flexDirection: { xs: "column-reverse", md: "row" } }} justifyContent={"center"} alignItems={"center"}>
           <Grid item sm={12} md={6}>
             <Paper variant="outlined" sx={{ borderRadius: "20px" }}>

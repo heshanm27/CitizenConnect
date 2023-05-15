@@ -1,4 +1,6 @@
 import * as CertificateService from "../service/certification.service.mjs";
+import StripeService from "../config/stripe.config.mjs";
+import Stripe from "stripe";
 
 export const getCertificates = async (req, res) => {
   try {
@@ -27,7 +29,35 @@ export const getCertificate = async (req, res) => {
 
 export const addCertificate = async (req, res) => {
   const certificate = req.body;
-console.log(certificate)
+
+//   const params = {
+//     payment_method_types: ["card"],
+//     billing_address_collection: "required",
+//     line_items: {
+//       price_data: {
+//         currency: "usd",
+//         product_data: {
+//           name: item.name,
+//         },
+//         unit_amount: Math.round(item.price * 100),
+//       },
+//     },
+//     mode: "payment",
+//     success_url: `${req.headers.origin}/user/payment/success`,
+//     cancel_url: `${req.headers.origin}/user/payment/cancel`,
+//     currency: "usd",
+//     customer_email: user.email,
+//     metadata: {
+//       order: "order",
+//       orderId: PlacedOrder.orderId,
+//     },
+//   };
+//   const session = await StripeService.checkout.sessions.create(params);
+//   res.status(200).json({
+//     url: session.url,
+//     orderId: PlacedOrder._id,
+//   });
+// console.log(certificate)
   try {
     const newCertificate = await CertificateService.createCertificate(certificate);
     res.status(201).json(newCertificate);

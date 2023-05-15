@@ -31,7 +31,7 @@ export default function VacanciesDashBoard() {
   } = useMutation({
     mutationFn: deleteBudget,
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-budgets"]);
+      queryClient.invalidateQueries(["admin-vacancies"]);
       setConfirmDialog(false);
       setNotify({
         isOpen: true,
@@ -67,18 +67,20 @@ export default function VacanciesDashBoard() {
         header: "Vacancie Closing Date ",
         enableGlobalFilter: false,
         Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year).getFullYear();
+          return new Date(row.original.closing_date).toLocaleDateString();
         },
       },
 
       {
-        accessorKey: "responses", //normal accessorKey
-        header: "Vacancie Responses Count",
-        enableGlobalFilter: false,
+        accessorKey: "createdAt", //normal accessorKey
+        header: "Published Date",
+        Cell: ({ renderedCellValue, row }) => {
+          return new Date(row.original.createdAt).toLocaleDateString();
+        },
       },
       {
-        accessorKey: "short_description", //normal accessorKey
-        header: "Vacancie Short Description",
+        accessorKey: "responses", //normal accessorKey
+        header: "Vacancie Responses Count",
         enableGlobalFilter: false,
       },
     ],
@@ -114,9 +116,9 @@ export default function VacanciesDashBoard() {
               Add Vacancies
             </Button>
           )}
-          rowCount={data?.length ?? 0}
+          rowCount={data?.vacancies?.length ?? 0}
           columns={columns}
-          data={data ?? []}
+          data={data?.vacancies ?? []}
           muiToolbarAlertBannerProps={
             isError
               ? {
@@ -138,7 +140,13 @@ export default function VacanciesDashBoard() {
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Delete">
-                <IconButton color="error" onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    setConfirmDialog(true);
+                    setDocID(row?.original?._id);
+                  }}
+                >
                   <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>

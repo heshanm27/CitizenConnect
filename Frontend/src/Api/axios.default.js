@@ -1,9 +1,10 @@
 import axios from "axios";
 import store from "../Redux/store";
+import { logOut } from "../Redux/auth.slice";
 // import { logOut } from "../Redux/auth/authslice";
-
+console.log("env",import.meta.env.BASE_URL)
 export const apiClient = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -27,8 +28,8 @@ apiClient.interceptors.response.use(
     console.log("Error: interceptor Token Expired", store.getState().authSlice.accessToken);
     if (error.response.status === 401) {
       // Remove the current token from the Redux store by dispatching a Redux action
-      // store.dispatch(logOut("Unauthorized,Please Sign Again")); // Dispatch your Redux action to remove the token
-      // window.location.href = "/signin";
+      store.dispatch(logOut("Unauthorized,Please Sign Again")); // Dispatch your Redux action to remove the token
+      window.location.href = "/admin/login";
     }
 
     // If the error is not related to token expiration, return it as is

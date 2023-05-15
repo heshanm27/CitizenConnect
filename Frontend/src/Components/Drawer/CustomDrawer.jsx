@@ -21,6 +21,7 @@ import { Logout } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
 import { useDispatch, useSelector } from "react-redux";
 import { changeMode } from "../../Redux/darkMode.slice";
+import { logOut } from "../../Redux/auth.slice";
 const drawerWidth = 240;
 const drawerWidthClose = 60;
 
@@ -44,8 +45,9 @@ export default function CustomDrawer() {
 
   const handleClose = (state) => {
     switch (state) {
-      case "Logout":
-        // dispatch(logOut("logout"));
+      case "logout":
+        console.log("logout");
+        dispatch(logOut("logout"));
         navigate("/signin", { replace: true });
         setAnchorEl(null);
         return;

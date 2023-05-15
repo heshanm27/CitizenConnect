@@ -41,7 +41,7 @@ export const createNews = async (req, res) => {
 
     let revievedNews =  data;
         if (req.files) {
-          const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
+          const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "news");
           revievedNews = { ...data, thumbnail: uploadedResponse };
         }
 

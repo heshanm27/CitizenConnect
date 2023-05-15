@@ -10,6 +10,7 @@ const ProjectSchema = new Schema(
     year_of_allocation: { type: String, required: true },
     description: { type: String, default: false },
     thumbnail: { type: String, default: "https://source.unsplash.com/random" },
+    budget:{type:Schema.Types.ObjectId,ref:"Budget"}
   },
   {
     timestamps: true,

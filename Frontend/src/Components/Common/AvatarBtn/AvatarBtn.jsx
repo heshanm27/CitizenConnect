@@ -7,6 +7,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../../../Redux/auth.slice";
 
 export default function AvatarBtn() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -18,23 +19,23 @@ export default function AvatarBtn() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    switch (role) {
-      case "seller":
-        navigate("/seller/orders/live", { replace: true });
-        break;
-      case "admin":
-        navigate("/admin/orders/live", { replace: true });
-        break;
-      default:
-        navigate("/user/orders", { replace: true });
-        break;
-    }
+    // switch (role) {
+    //   case "seller":
+    //     navigate("/seller/orders/live", { replace: true });
+    //     break;
+    //   case "admin":
+    //     navigate("/admin/orders/live", { replace: true });
+    //     break;
+    //   default:
+    //     navigate("/user/orders", { replace: true });
+    //     break;
+    // }
     setAnchorEl(null);
   };
 
   const hadnleLogout = () => {
-    // dispatch(logOut("logout"));
-    navigate("/signin", { replace: true });
+    dispatch(logOut("logout"));
+    navigate("/admin/login", { replace: true });
     setAnchorEl(null);
   };
 

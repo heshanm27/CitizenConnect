@@ -15,8 +15,14 @@ export const getManyNews = async ({ search = "", sortBy = "createdAt", order = "
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
     
-    
-    return { news, total: news.length };
+      const totalDocCount = await News.countDocuments(defaultFilters)
+      .sort({
+        [sortBy]: order,
+      })
+      .count();
+
+    const total = Math.ceil(totalDocCount / limit);
+    return { news, total: total };
   } catch (error) {
     throw new CustomError(error.message);
   }

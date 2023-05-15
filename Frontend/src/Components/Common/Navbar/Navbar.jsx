@@ -11,6 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import NightlightIcon from "@mui/icons-material/Nightlight";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import { changeMode } from "../../../Redux/darkMode.slice";
+import {
+
+  pascalCase,
+
+} from "change-case";
 export default function Navbar() {
   const theme = useTheme();
   const { mode } = useSelector((state) => state.modeSlice);
@@ -56,10 +61,11 @@ export default function Navbar() {
                   {mode === "light" ? <NightlightIcon /> : <WbSunnyIcon />}
                   {/* <KeyboardArrowDownIcon /> */}
                 </IconButton>
-              </Stack>
-              <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                 {isLoggedIn && <AvatarBtn />}
               </Stack>
+              {/* <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
+                {isLoggedIn && <AvatarBtn />}
+              </Stack> */}
             </Box>
           </Container>
         </Toolbar>
@@ -90,7 +96,7 @@ function CustomLink({ label, url }) {
       underline="hover"
       color={isActive ? theme.palette.primary.main : theme.palette.grey[400]}
     >
-      {label}
+      {pascalCase(label)}
     </Link>
   );
 }

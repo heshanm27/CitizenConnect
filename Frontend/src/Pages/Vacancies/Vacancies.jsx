@@ -1,38 +1,68 @@
-import Button from "@mui/material/Button";
 
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
 import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Pagination } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import DraftsIcon from "@mui/icons-material/Drafts";
+
 import { useState } from "react";
 import { VacanciesCategory } from "../../Components/Form/VacanciesForm";
 import VacanciesCard from "../../Components/Common/CustomCard/VacanciesCard";
-
+import { pascalCase } from "change-case";
+import { useQuery } from "@tanstack/react-query";
+import { getVacancies } from "../../Api/vacancies.api";
 const cards = [1, 2, 3, 4, 5, 7, 8, 9];
 
 export default function Vacancies() {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({
+    limit: 12,
+    order: -1,
+    page: 1,
+    search: "",
+    sortBy: "createdAt",
+    cat: "",
+  });
+  const handleCategoryChange = (cat) => {
+    setSelectedCat(cat);
+    setFilter((prev) => ({
+      ...prev,
+      cat,
+    }));
+  };
+
+  const handleClearCategory = () => {
+    setSelectedCat("");
+    setFilter((prev) => ({
+      ...prev,
+      cat: "",
+    }));
+  };
+
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["user-news", filter],
+    queryFn: () => getVacancies(filter),
+    onError: () => {
+      setNotify({
+        isOpen: true,
+        message: "Error occured when data loading",
+        title: "Error",
+        type: "error",
+      });
+    },
+  });
+
   const handleClick = () => {
     setOpen(!open);
   };
   const handlePageChange = (event, page) => {
     setPage(page);
   };
+  console.log(data)
   return (
     <>
       <Navbar />
@@ -67,7 +97,7 @@ export default function Vacancies() {
               >
                 {VacanciesCategory.map((item) => (
                   <ListItemButton>
-                    <ListItemText primary={item} />
+                    <ListItemText primary={pascalCase(item)} />
                   </ListItemButton>
                 ))}
               </List>
