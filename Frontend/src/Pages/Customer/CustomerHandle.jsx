@@ -8,6 +8,14 @@ useEffect(() => {
   getAllEquipment().then((data) => setEquipment(data));
 }, []);
 
+const handlePageChange = (event, page) => {
+  setPage(page);
+  setFilter((prev) => ({
+    ...prev,
+    page,
+  }));
+};
+
 const handleEdit = () => {
   setIsEditing(true);
   setEquipmentId(equipment.id);
