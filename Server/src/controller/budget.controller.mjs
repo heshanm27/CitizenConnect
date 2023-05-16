@@ -36,6 +36,7 @@ const createBudget = async (req, res) => {
 const updateBudget = async (req, res) => {
   const { id } = req.params;
   const budget = req.body;
+  console.log("updateBudget", req);
   try {
     const updatedBudget = await BudgetService.updateBudget(id, budget);
     res.status(200).json(updatedBudget);

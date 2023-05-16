@@ -30,11 +30,15 @@ export const createBudget = async (data) => {
   }
 };
 
-export const updateBudget = async (id, data) => {
+export const updateBudget = async (data) => {
   try {
-    const response = await apiClient.patch(`/${basePath}/${id}`, data);
+    const { id, ...rest } = data;
+
+    const response = await apiClient.patch(`/${basePath}/${id}`, rest);
+    console.log("updateBudget", response.data);
     return response.data;
   } catch (error) {
+    console.log("updateBudget", error);
     throw new Error(error.response.data.message);
   }
 };

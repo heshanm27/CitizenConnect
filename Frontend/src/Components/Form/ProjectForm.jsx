@@ -19,14 +19,13 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBudget } from "../../Api/budget.api";
-import Navbar from "../../Components/Common/Navbar/Navbar";
-import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
-import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
 import { createProject } from "../../Api/project.api";
-export default function ProjectForm({ setNotify, setDialogOff }) {
+
+export const ProjectCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
+
+export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
   const theme = useTheme();
   const [richText, setRichText] = useState("");
   const dropzoneRef = useRef(null);
@@ -88,16 +87,18 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
     allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
     spended_budget: Yup.number().required("Spended Budgetis required").min(1, "Minimum value is 1"),
     unit: Yup.string().required("Unit is required"),
+    project_category: Yup.array().of(Yup.string()).min(1, "At least one project type is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      title: "",
-      year_of_allocation: "",
-      project_owner: "",
-      allocated_budget: "",
-      spended_budget: "",
-      unit: "",
+      title: updateData?.title || "",
+      year_of_allocation: updateData?.year_of_allocation || "",
+      project_owner: updateData?.project_owner || "",
+      allocated_budget: updateData?.allocated_budget || "",
+      spended_budget: updateData?.spended_budget || "",
+      unit: updateData?.unit || "",
+      project_category: updateData?.project_category || [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -203,6 +204,43 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
                 {errors.unit ? errors.unit : "Enter what unit you used to enter Allocated Budget & Spended Budget"}{" "}
               </FormHelperText>
             </FormControl>
+
+            <Box>
+              <InputLabel sx={{ my: 1 }} required id="demo-simple-select-label">
+                Select Project Category
+              </InputLabel>
+              <FormControl fullWidth>
+                <Select
+                  name="project_category"
+                  multiple
+                  fullWidth
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300, // adjust the maxHeight to suit your needs
+                      },
+                    },
+                  }}
+                  displayEmpty
+                  error={Boolean(errors.project_category)}
+                  value={values.project_category}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  {/* <MenuItem disabled value="">
+                    <em>None</em>
+                  </MenuItem> */}
+                  {ProjectCategoryTypes.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error={Boolean(errors.project_category)}>
+                  {errors.project_category ? errors.project_category : "Select at least one Projecct Category"}
+                </FormHelperText>
+              </FormControl>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6} spacing={2}>
@@ -259,6 +297,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
               <Typography sx={{ mb: 2 }}>Project Description</Typography>
               <Editor
                 onInit={(evt, editor) => (editorRef.current = editor)}
+                initialValue={updateData ? updateData.description : ""}
                 onChange={handleEditorChange}
                 apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
                 init={{
@@ -318,7 +357,7 @@ export default function ProjectForm({ setNotify, setDialogOff }) {
                   <Typography variant="body1" align="center" color="textSecondary" sx={{ my: 4 }}>
                     Drag and drop files here, or click to select files
                   </Typography>
-                  <img src={DefaultSVg} alt="default image" width={"200px"} />
+                  <img src={updateData?.thumbnail || DefaultSVg} alt="default image" width={"200px"} />
                 </Stack>
               ) : (
                 selectedFiles.map((file, index) => {

@@ -1,4 +1,19 @@
-import { Box, Button, CircularProgress, Container, Grid, InputLabel, Stack, TextField, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -12,7 +27,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { createVacancy } from "../../Api/vacancies.api";
 
 export const VacanciesCategory = ["IT", "HR", "Human", "Worker"];
-export default function VacanciesForm({ setNotify, setDialogOff }) {
+export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
   const theme = useTheme();
   const [richText, setRichText] = useState("");
   const dropzoneRef = useRef(null);
@@ -67,13 +82,15 @@ export default function VacanciesForm({ setNotify, setDialogOff }) {
     title: Yup.string().required("Title is required"),
     short_description: Yup.string().required("Short Disription is required"),
     closing_date: Yup.string().required("Vacancies Closing Date is required"),
+    vacanies_category: Yup.array().of(Yup.string()).min(1, "At least one vacancie type is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      title: "",
-      short_description: "",
-      closing_date: "",
+      title: updateData ? updateData.title : "",
+      short_description: updateData ? updateData.short_description : "",
+      closing_date: updateData ? updateData.closing_date : "",
+      vacanies_category: updateData ? updateData.vacanies_category : [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -84,13 +101,6 @@ export default function VacanciesForm({ setNotify, setDialogOff }) {
         description: richText,
         thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
       });
-      //   console.log({
-      //     title: values.title,
-      //     short_description: values.short_description,
-      //     closing_date: values.closing_date,
-      //     description: richText,
-      //     thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
-      //   });
     },
   });
   console.log("error", errors);
@@ -144,14 +154,51 @@ export default function VacanciesForm({ setNotify, setDialogOff }) {
               onChange={handleChange}
               helperText={errors.short_description}
             />
+
+            <Box>
+              <InputLabel sx={{ my: 1 }} required id="demo-simple-select-label">
+                Select Vacancies Category
+              </InputLabel>
+              <FormControl fullWidth>
+                <Select
+                  name="vacanies_category"
+                  multiple
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300, // adjust the maxHeight to suit your needs
+                      },
+                    },
+                  }}
+                  displayEmpty
+                  error={Boolean(errors.vacanies_category)}
+                  value={values.vacanies_category}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  {/* <MenuItem disabled value="">
+                    <em>None</em>
+                  </MenuItem> */}
+                  {VacanciesCategory.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error={Boolean(errors.vacanies_category)}>
+                  {errors.vacanies_category ? errors.vacanies_category : "Select at least one Vacanies Category"}
+                </FormHelperText>
+              </FormControl>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={12}>
             <Box sx={{ mb: 5 }}>
-              <Typography sx={{ mb: 2 }}>Project Description</Typography>
+              <Typography sx={{ mb: 2 }}>Vacancie Description</Typography>
               <Editor
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 onChange={handleEditorChange}
+                initialValue={updateData ? updateData.description : ""}
                 apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
                 init={{
                   height: 400,
@@ -210,7 +257,7 @@ export default function VacanciesForm({ setNotify, setDialogOff }) {
                   <Typography variant="body1" align="center" color="textSecondary" sx={{ my: 4 }}>
                     Drag and drop files here, or click to select files
                   </Typography>
-                  <img src={DefaultSVg} alt="default image" width={"200px"} />
+                  <img src={updateData?.thumbnail || DefaultSVg} alt="default image" width={"200px"} />
                 </Stack>
               ) : (
                 selectedFiles.map((file, index) => {
