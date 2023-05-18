@@ -15,6 +15,8 @@ export default function NewsDashBoard() {
   const theme = useTheme();
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
+  const [updateDialog, setUpdateDialog] = useState(false);
+  const [updateData, setUpdateData] = useState({});
   const [addDialog, setAddDialog] = useState(false);
   const [docID, setDocID] = useState("");
   const [notify, setNotify] = useState({
@@ -130,7 +132,12 @@ export default function NewsDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton
+                  onClick={(e) => {
+                    setUpdateData(row.original);
+                    setUpdateDialog(true);
+                  }}
+                >
                   <EditIcon />
                 </IconButton>
               </Tooltip>
@@ -159,6 +166,9 @@ export default function NewsDashBoard() {
         <CustomSnackBar notify={notify} setNotify={setNotify} />
         <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add News"}>
           <NewsForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
+        <CustomeDialog open={updateDialog} setOpen={() => setUpdateDialog(false)} title={"Update Add News"}>
+          <NewsForm setDialogOff={() => setUpdateDialog(false)} setNotify={setNotify} updatData={updateData} />
         </CustomeDialog>
       </Container>
     </>

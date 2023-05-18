@@ -13,7 +13,9 @@ export default function BudgetDashBoard() {
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
+  const [updateDialog, setUpdateDialog] = useState(false);
   const [docID, setDocID] = useState("");
+  const [updateData, setUpdateData] = useState({});
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -123,7 +125,12 @@ export default function BudgetDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton
+                  onClick={(e) => {
+                    setUpdateDialog(true);
+                    setUpdateData(row.original);
+                  }}
+                >
                   <EditIcon />
                 </IconButton>
               </Tooltip>
@@ -152,6 +159,9 @@ export default function BudgetDashBoard() {
         <CustomSnackBar notify={notify} setNotify={setNotify} />
         <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Budget"}>
           <BudgetForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
+        <CustomeDialog open={updateDialog} setOpen={() => setUpdateDialog(false)} title={"Update Budget"}>
+          <BudgetForm setDialogOff={() => setUpdateDialog(false)} setNotify={setNotify} updateData={updateData} />
         </CustomeDialog>
       </Container>
     </>

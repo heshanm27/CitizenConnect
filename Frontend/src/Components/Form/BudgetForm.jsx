@@ -7,19 +7,18 @@ import {
   FormHelperText,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBudget } from "../../Api/budget.api";
-export default function BudgetForm({ setNotify, setDialogOff }) {
+import { createBudget, updateBudget } from "../../Api/budget.api";
+export default function BudgetForm({ setNotify, setDialogOff, updateData }) {
   const [richText, setRichText] = useState("");
   const editorRef = useRef(null);
   const queryClient = useQueryClient();
@@ -46,6 +45,28 @@ export default function BudgetForm({ setNotify, setDialogOff }) {
       queryClient.invalidateQueries(["admin-budgets"]);
     },
   });
+
+  const updateMutation = useMutation({
+    mutationFn: updateBudget,
+    onSuccess: (value) => {
+      setNotify({
+        isOpen: true,
+        message: "Update success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-budgets"]);
+    },
+    onError: (error) => {
+      setNotify({
+        isOpen: true,
+        message: "Update failed",
+        title: error?.message,
+        type: "error",
+      });
+    },
+  });
   const validationSchema = Yup.object().shape({
     year: Yup.string().required("Year is required"),
     allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
@@ -55,29 +76,34 @@ export default function BudgetForm({ setNotify, setDialogOff }) {
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      year: "",
-      allocated_budget: 1,
-      spended_budget: 1,
-      unit: "",
+      year: updateData?.year || "",
+      allocated_budget: updateData?.allocated_budget || "",
+      spended_budget: updateData?.spended_budget || "",
+      unit: updateData?.unit || "",
     },
     validationSchema,
     onSubmit: (values) => {
-      mutate({
-        year: values.year,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        description: richText,
-      });
-      console.log({
-        year: values.year,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        description: richText,
-      });
+      if (updateData) {
+        updateMutation.mutate({
+          id: updateData._id,
+          year: values.year,
+          allocated_budget: values.allocated_budget,
+          spended_budget: values.spended_budget,
+          unit: values.unit,
+          description: richText,
+        });
+      } else {
+        mutate({
+          year: values.year,
+          allocated_budget: values.allocated_budget,
+          spended_budget: values.spended_budget,
+          unit: values.unit,
+          description: richText,
+        });
+      }
     },
   });
+
   return (
     <Container maxWidth="lg">
       <Stack direction={"column"} spacing={3}>
@@ -176,6 +202,7 @@ export default function BudgetForm({ setNotify, setDialogOff }) {
           <Typography sx={{ mb: 2 }}>Budget Description</Typography>
           <Editor
             onInit={(evt, editor) => (editorRef.current = editor)}
+            initialValue={updateData?.description}
             onChange={handleEditorChange}
             apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
             init={{
@@ -217,7 +244,7 @@ export default function BudgetForm({ setNotify, setDialogOff }) {
           </Typography>
         )}
         <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
-          {isLoading ? <CircularProgress /> : " Submit"}
+          {updateMutation.isLoading || isLoading ? <CircularProgress /> : updateData ? "Update" : " Submit"}
         </Button>
       </Stack>
     </Container>

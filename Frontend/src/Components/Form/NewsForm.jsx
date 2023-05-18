@@ -14,7 +14,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
@@ -25,7 +25,7 @@ import { createNews } from "../../Api/news.api";
 
 export const NEWSCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
 
-export default function NewsForm({ setNotify, setDialogOff }) {
+export default function NewsForm({ setNotify, setDialogOff, updatData }) {
   const theme = useTheme();
   const [richText, setRichText] = useState("sdsdsd");
   const dropzoneRef = useRef(null);
@@ -62,12 +62,6 @@ export default function NewsForm({ setNotify, setDialogOff }) {
     }
   };
 
-  // useEffect(() => {
-  
-  //     editorRef.current.setContent("<p>Hello world!</p>");
-  
-  // }, []);
-
   const { isLoading, isError, error, mutate } = useMutation({
     mutationFn: createNews,
     onSuccess: (value) => {
@@ -89,9 +83,9 @@ export default function NewsForm({ setNotify, setDialogOff }) {
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
-      title: "",
-      short_description: "",
-      news_category: [""],
+      title: updatData?.title || "",
+      short_description: updatData?.short_description || "",
+      news_category: updatData?.news_category || [""],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -176,6 +170,7 @@ export default function NewsForm({ setNotify, setDialogOff }) {
               <Typography sx={{ mb: 2 }}>News Description</Typography>
               <Editor
                 onInit={(evt, editor) => (editorRef.current = editor)}
+                initialValue={updatData?.description || ""}
                 onChange={handleEditorChange}
                 apiKey="dzmmscs8w6nirjr0qay6mkqd0m5h0eowz658h3g6me0qe9s9"
                 init={{
@@ -235,7 +230,7 @@ export default function NewsForm({ setNotify, setDialogOff }) {
                   <Typography variant="body1" align="center" color="textSecondary" sx={{ my: 4 }}>
                     Drag and drop files here, or click to select files
                   </Typography>
-                  <img src={DefaultSVg} alt="default image" width={"200px"} />
+                  <img src={updatData?.thumbnail ?? DefaultSVg} alt="default image" width={"200px"} />
                 </Stack>
               ) : (
                 selectedFiles.map((file, index) => {

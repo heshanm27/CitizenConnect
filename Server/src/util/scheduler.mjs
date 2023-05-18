@@ -44,7 +44,7 @@ function directoryDelete(directoryPath) {
 }
 
 export const dailyScheduleTwo = schedule(
-  "* 5 * * * *",
+  "* * 5 * * *",
   () => {
     console.log("running a task every minute");
     const currentDir = process.cwd();
