@@ -1,4 +1,3 @@
-
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -13,7 +12,6 @@ import VacanciesCard from "../../Components/Common/CustomCard/VacanciesCard";
 import { pascalCase } from "change-case";
 import { useQuery } from "@tanstack/react-query";
 import { getVacancies } from "../../Api/vacancies.api";
-const cards = [1, 2, 3, 4, 5, 7, 8, 9];
 
 export default function Vacancies() {
   const [open, setOpen] = useState(true);
@@ -42,9 +40,8 @@ export default function Vacancies() {
     }));
   };
 
-
   const { data, isLoading } = useQuery({
-    queryKey: ["user-news", filter],
+    queryKey: ["user-vacancies", filter],
     queryFn: () => getVacancies(filter),
     onError: () => {
       setNotify({
@@ -62,7 +59,7 @@ export default function Vacancies() {
   const handlePageChange = (event, page) => {
     setPage(page);
   };
-  console.log(data)
+  console.log(data);
   return (
     <>
       <Navbar />
@@ -104,17 +101,13 @@ export default function Vacancies() {
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container spacing={4}>
-                {cards.map((card) => (
+                {data?.vacancies?.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <VacanciesCard
-                      data={{
-                        id: 1,
-                      }}
-                    />
+                    <VacanciesCard data={card} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
-                  <Pagination color="primary" page={page} count={10} variant="outlined" shape="rounded" onChange={handlePageChange} />
+                  <Pagination color="primary" page={page} count={data?.total} variant="outlined" shape="rounded" onChange={handlePageChange} />
                 </Stack>
               </Grid>
             </Grid>
