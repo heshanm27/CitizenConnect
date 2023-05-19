@@ -283,8 +283,8 @@ export default function DocumentRequest() {
           </Grid>
         </Paper>
         <CustomSnackBar notify={notify} setNotify={setNotify} />
-        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Verify Otp"}>
-          <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        <CustomeDialog size={"sm"} open={addDialog} setOpen={() => setAddDialog(false)} title={"Verify Otp"}>
+          <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} email={values?.email} />
         </CustomeDialog>
       </Container>
 

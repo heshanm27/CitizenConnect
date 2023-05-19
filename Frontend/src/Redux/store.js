@@ -3,16 +3,18 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from "redux-persist/lib/storage";
 import { authSlice } from "./auth.slice.js";
 import { modeSlice } from "./darkMode.slice.js";
-
+import { otpSlice } from "./otp.slice.js";
 const persistConfig = {
   key: "dynamic",
   version: 1,
   storage,
+  blacklist: ['otp'],
 };
 
 const rootReducer = combineReducers({
   authSlice: authSlice.reducer,
   modeSlice: modeSlice.reducer,
+  otpSlice: otpSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
