@@ -36,9 +36,10 @@ export const createProject = async (data) => {
   }
 };
 
-export const updateProject = async (id, data) => {
+export const updateProject = async (data) => {
   try {
-    const response = await apiClient.patch(`/${basePath}/${id}`, data, {
+    const { id,...rest } = data;
+    const response = await apiClient.patch(`/${basePath}/${id}`, rest, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

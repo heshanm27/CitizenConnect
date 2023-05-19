@@ -9,9 +9,8 @@ export const getBudgets = async ({ search = "", sortBy = "year", order = "-1", l
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
-    
-      
-    return {}
+
+    return {};
   } catch (error) {
     throw new BadRequestError(error.message);
   }
@@ -43,6 +42,7 @@ export const createBudget = async (budget) => {
 
 export const deleteBudget = async (id) => {
   try {
+    console.log("deleteBudget", id);
     return await Budget.findByIdAndDelete(id);
   } catch (error) {
     throw new CustomError(error.message);

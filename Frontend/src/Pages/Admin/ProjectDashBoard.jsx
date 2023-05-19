@@ -4,7 +4,7 @@ import MaterialReactTable from "material-react-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { getProjects } from "../../Api/project.api";
+import { deleteProject, getProjects } from "../../Api/project.api";
 import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
@@ -15,6 +15,8 @@ export default function ProjectDashBoard() {
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [editData, setEditData] = useState({});
   const [docID, setDocID] = useState("");
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -30,7 +32,7 @@ export default function ProjectDashBoard() {
     error: deleteError,
     mutate,
   } = useMutation({
-    mutationFn: deleteBudget,
+    mutationFn: deleteProject,
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-project"]);
       setConfirmDialog(false);
@@ -56,12 +58,9 @@ export default function ProjectDashBoard() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "year", //access nested data with dot notation
+        accessorKey: "year_of_allocation.year", //access nested data with dot notation
         header: "#Year",
         enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.year_of_allocation).getFullYear();
-        },
       },
       {
         accessorKey: "title",
@@ -90,6 +89,7 @@ export default function ProjectDashBoard() {
     ],
     []
   );
+  console.log(data?.projetData);
   return (
     <>
       <Container maxWidth="xl">
@@ -134,7 +134,12 @@ export default function ProjectDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton
+                  onClick={(e) => {
+                    setEditData(row.original);
+                    setEditDialog(true);
+                  }}
+                >
                   <EditIcon />
                 </IconButton>
               </Tooltip>
@@ -164,6 +169,9 @@ export default function ProjectDashBoard() {
         <CustomSnackBar notify={notify} setNotify={setNotify} />
         <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Project"}>
           <ProjectForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
+        <CustomeDialog open={editDialog} setOpen={() => setEditDialog(false)} title={"Edit Project"}>
+          <ProjectForm setDialogOff={() => setEditDialog(false)} setNotify={setNotify} updateData={editData} />
         </CustomeDialog>
       </Container>
     </>

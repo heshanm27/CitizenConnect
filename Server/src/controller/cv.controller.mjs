@@ -2,7 +2,14 @@ import * as CVService from "../service/cv.service.mjs";
 
 export const getCVs = async (req, res) => {
   try {
-    const cvs = await CVService.findAll();
+    const cvs = await CVService.findAll({
+      search: req.query.search,
+      sortBy: req.query.sortBy,
+      order: req.query.order,
+      limit: req.query.limit,
+      page: req.query.page,
+      id: req.params.id,
+    });
     res.status(200).json(cvs);
   } catch (error) {
     res.status(500).json({ message: error.message });

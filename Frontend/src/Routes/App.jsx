@@ -42,7 +42,6 @@ function App() {
             <Route path="/admin/vacancies" element={<VacanciesDashBoard />} />
             <Route path="/admin/news" element={<NewsDashBoard />} />
             <Route path="/admin/:id/cv" element={<CvDashBoard />} />
-            <Route path="/admin/:id/cv/:cv" element={<CvDashBoard />} />
           </Route>
           {/* </Route> */}
 

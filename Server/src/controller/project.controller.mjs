@@ -44,9 +44,13 @@ export const createProject = async (req, res) => {
 
 export const updateProject = async (req, res) => {
   try {
-    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "project");
-    const upproject = { ...req.body, thumbnail: uploadedResponse };
-    const project = await ProjectService.update(req.params.id, upproject);
+    let  upproject = req.body;
+    if (req?.files?.thumbnail?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req?.files?.thumbnail.tempFilePath, req?.files?.thumbnail?.name, "project");
+      upproject = { ...req.body, thumbnail: uploadedResponse };
+    }
+
+    const project = await ProjectService.updateProject(req.params.id, upproject);
     res.status(200).json(project);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -55,7 +59,8 @@ export const updateProject = async (req, res) => {
 
 export const deleteProject = async (req, res) => {
   try {
-    await ProjectService.delete(req.params.id);
+    console.log("deleteProject", req.params.id);
+    await ProjectService.deleteProject(req.params.id);
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });

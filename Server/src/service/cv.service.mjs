@@ -1,9 +1,11 @@
 import { CustomError, BadRequestError } from "../error/index.mjs";
 import CVModel from "../models/cv.model.mjs";
 
-export const getCVS = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getCVS = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1",id }) => {
   try {
-    return await CVModel.find()
+    return await CVModel.find({
+      vacancie: id,
+    })
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
