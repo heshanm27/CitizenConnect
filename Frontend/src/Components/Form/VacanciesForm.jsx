@@ -24,7 +24,7 @@ import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { createVacancy } from "../../Api/vacancies.api";
+import { createVacancy, updateVacancy } from "../../Api/vacancies.api";
 
 export const VacanciesCategory = ["IT", "HR", "Human", "Worker"];
 export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
@@ -78,6 +78,29 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
       queryClient.invalidateQueries(["admin-vacancies"]);
     },
   });
+
+
+  const {isLoading:isUpdateLoading,mutate:UpdateMutate } = useMutation({
+    mutationFn: updateVacancy,
+    onSuccess: (value) => { 
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-vacancies"]);
+    },
+    onError: (error) => {
+      setNotify({
+        isOpen: true,
+        message: error.message,
+        title: "Error",
+        type: "error",
+      });
+     }
+  })
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     short_description: Yup.string().required("Short Disription is required"),
@@ -94,6 +117,16 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
     },
     validationSchema,
     onSubmit: (values) => {
+      if (updateData) {
+        UpdateMutate({
+          id: updateData.id,
+          title: values.title,
+          short_description: values.short_description,
+          closing_date: values.closing_date,
+          description: richText,
+          thumbnail:selectedFiles.length === 0 ? null  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+        })
+       }
       mutate({
         title: values.title,
         short_description: values.short_description,
@@ -281,7 +314,7 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
               </Typography>
             )}
             <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
-              {isLoading ? <CircularProgress /> : " Submit"}
+              {isUpdateLoading || isLoading ? <CircularProgress color="inherit" /> : updateData  ?"Update" : " Submit"}
             </Button>
           </Grid>
         </Grid>
