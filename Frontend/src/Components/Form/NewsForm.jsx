@@ -21,7 +21,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDropzone } from "react-dropzone";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
-import { createNews } from "../../Api/news.api";
+import { createNews, updateNews } from "../../Api/news.api";
 
 export const NEWSCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
 
@@ -67,13 +67,36 @@ export default function NewsForm({ setNotify, setDialogOff, updatData }) {
     onSuccess: (value) => {
       setNotify({
         isOpen: true,
-        message: "Submit success",
+        message: "News adding success",
         title: "Success",
         type: "success",
       });
       setDialogOff();
       queryClient.invalidateQueries(["admin-news"]);
     },
+  });
+
+  const { isLoading:isUpdateLoading,mutate:updateMutate } = useMutation({
+    mutationFn: updateNews,
+    onSuccess: (value) => {
+      setNotify({
+        isOpen: true,
+        message: "Update success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-news"]);
+    },
+    onError: (error) => { 
+      setNotify({
+        isOpen: true,
+        message: "Update failed",
+        title: "Error",
+        type: "error",
+      });
+    },
+
   });
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("News title is required"),
@@ -89,13 +112,25 @@ export default function NewsForm({ setNotify, setDialogOff, updatData }) {
     },
     validationSchema,
     onSubmit: (values) => {
-      mutate({
-        title: values.title,
-        short_description: values.short_description,
-        description: richText,
-        news_category: values.news_category,
-        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
-      });
+      if (updatData) { 
+        updateMutate({
+          id: updatData._id,
+          title: values.title,
+          short_description: values.short_description,
+          description: richText,
+          news_category: values.news_category,
+          thumbnail:selectedFiles.length === 0 ? null  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+        })
+      } else {
+        mutate({
+          title: values.title,
+          short_description: values.short_description,
+          description: richText,
+          news_category: values.news_category,
+          thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+        });
+      }
+ 
     },
   });
   return (
@@ -254,7 +289,7 @@ export default function NewsForm({ setNotify, setDialogOff, updatData }) {
               </Typography>
             )}
             <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
-              {isLoading ? <CircularProgress /> : " Submit"}
+              {isUpdateLoading || isLoading ? <CircularProgress color="inherit" /> : updatData ? "Update" : " Submit"}
             </Button>
           </Grid>
         </Grid>

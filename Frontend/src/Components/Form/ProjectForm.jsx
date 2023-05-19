@@ -7,6 +7,7 @@ import {
   FormHelperText,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -18,10 +19,11 @@ import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDropzone } from "react-dropzone";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
-import { createProject } from "../../Api/project.api";
+import { createProject, updateProject } from "../../Api/project.api";
+import { getBudgets } from "../../Api/budget.api";
 
 export const ProjectCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
 
@@ -37,6 +39,14 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
     years.push(year);
   }
 
+  const {
+    data,
+    isLoading: isYearLoading,
+    isError: isYearLoadError,
+  } = useQuery({
+    queryKey: ["admin-budget-year"],
+    queryFn: getBudgets,
+  });
   const { getRootProps, getInputProps, fileRejections, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => handleDrop(acceptedFiles),
     maxFiles: 1,
@@ -79,6 +89,43 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
       setDialogOff();
       queryClient.invalidateQueries(["admin-project"]);
     },
+    onError: (error) => {
+      console.log(error);
+      setNotify({
+        isOpen: true,
+        message: error?.response?.data?.message || "Something went wrong",
+        title: "Error",
+        type: "error",
+      });
+    },
+  });
+
+  const {
+    isLoading: isUpdateLoading,
+    isError: isUpdateError,
+    error: updateError,
+    mutate: updateMutate,
+  } = useMutation({
+    mutationFn: updateProject,
+    onSuccess: (value) => {
+      setNotify({
+        isOpen: true,
+        message: "Submit success",
+        title: "Success",
+        type: "success",
+      });
+      setDialogOff();
+      queryClient.invalidateQueries(["admin-project"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      setNotify({
+        isOpen: true,
+        message: error?.response?.data?.message || "Something went wrong",
+        title: "Error",
+        type: "error",
+      });
+    },
   });
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
@@ -87,7 +134,7 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
     allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
     spended_budget: Yup.number().required("Spended Budgetis required").min(1, "Minimum value is 1"),
     unit: Yup.string().required("Unit is required"),
-    project_category: Yup.array().of(Yup.string()).min(1, "At least one project type is required"),
+    category: Yup.string().required("Project Category is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
@@ -98,31 +145,50 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
       allocated_budget: updateData?.allocated_budget || "",
       spended_budget: updateData?.spended_budget || "",
       unit: updateData?.unit || "",
-      project_category: updateData?.project_category || [],
+      category: updateData?.category || "",
     },
     validationSchema,
     onSubmit: (values) => {
-      mutate({
-        title: values.title,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        year_of_allocation: values.year_of_allocation,
-        project_owner: values.project_owner,
-        description: richText,
-        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
-      });
-      console.log({
-        title: values.title,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        project_owner: values.project_owner,
-        description: richText,
-        thumbnail: selectedFiles.length > 1 ? selectedFiles[0] : selectedFiles,
-      });
+      if (updateData) {
+        updateMutate({
+          id: updateData._id,
+          title: values.title,
+          allocated_budget: values.allocated_budget,
+          spended_budget: values.spended_budget,
+          unit: values.unit,
+          year_of_allocation: values.year_of_allocation,
+          project_owner: values.project_owner,
+          description: richText || updateData.description,
+          thumbnail:selectedFiles.length === 0 ? null  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+          category: values.category,
+        });
+      } else {
+        mutate({
+          title: values.title,
+          allocated_budget: values.allocated_budget,
+          spended_budget: values.spended_budget,
+          unit: values.unit,
+          year_of_allocation: values.year_of_allocation,
+          project_owner: values.project_owner,
+          description: richText,
+          thumbnail:  selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+          category: values.category,
+        });
+      }
     },
   });
+
+  if (data?.length === 0) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <Typography variant="h6" sx={{ my: 2 }}>
+          Please create budget year before creating project
+        </Typography>
+        <Link href="/admin/budget">Visit</Link>
+      </Box>
+    );
+  }
+  console.log("Budget Year", data);
   return (
     <>
       <Container maxWidth="lg">
@@ -169,9 +235,9 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  {years.map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
+                  {data?.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.year}
                     </MenuItem>
                   ))}
                 </Select>
@@ -211,8 +277,7 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
               </InputLabel>
               <FormControl fullWidth>
                 <Select
-                  name="project_category"
-                  multiple
+                  name="category"
                   fullWidth
                   MenuProps={{
                     PaperProps: {
@@ -222,8 +287,8 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
                     },
                   }}
                   displayEmpty
-                  error={Boolean(errors.project_category)}
-                  value={values.project_category}
+                  error={Boolean(errors.category)}
+                  value={values.category}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
@@ -236,8 +301,8 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText error={Boolean(errors.project_category)}>
-                  {errors.project_category ? errors.project_category : "Select at least one Projecct Category"}
+                <FormHelperText error={Boolean(errors.category)}>
+                  {errors.category ? errors.category : "Select at least one Projecct Category"}
                 </FormHelperText>
               </FormControl>
             </Box>
@@ -381,7 +446,8 @@ export default function ProjectForm({ setNotify, setDialogOff, updateData }) {
               </Typography>
             )}
             <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
-              {isLoading ? <CircularProgress /> : " Submit"}
+        
+              {isUpdateLoading|| isLoading  ? <CircularProgress color="inherit" /> : updateData ? "Update" : " Submit"}
             </Button>
           </Grid>
         </Grid>

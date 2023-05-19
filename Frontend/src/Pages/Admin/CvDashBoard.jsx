@@ -6,8 +6,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { getCVs } from "../../Api/cv.api";
+import { useParams } from "react-router-dom";
+import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 export default function CvDashBoard() {
-  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-cv"], queryFn: getCVs });
+  const { id } = useParams();
+  const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-cv"], queryFn: () => getCVs(id) });
+  const [viewDialog, setViewDialog] = useState(false);
+  const [cvData, setCvData] = useState({});
+  const handleClick = (e, rowData) => {
+    setCvData(rowData);
+    setViewDialog(true);
+  };
+
   console.log(error, data, isLoading, isError);
   const columns = useMemo(
     () => [
@@ -19,24 +29,15 @@ export default function CvDashBoard() {
       {
         accessorKey: "email", //normal accessorKey
         header: "Candidate Email",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.allocated_budget + " " + row.original.unit;
-        },
       },
       {
         accessorKey: "nic_passport", //normal accessorKey
         header: "Candidate NIC/PASSPORT",
-        Cell: ({ renderedCellValue, row }) => {
-          return "$" + row.original.spended_budget + " " + row.original.unit;
-        },
       },
       {
-        accessorKey: "dob", //access nested data with dot notation
-        header: "DOB",
+        accessorKey: "phone", //access nested data with dot notation
+        header: "Phone Number",
         enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
-          return new Date(row.original.dob).getFullYear();
-        },
       },
     ],
     []
@@ -80,19 +81,18 @@ export default function CvDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton onClick={(e) => handleClick(e, row?.original)}>
                   <EditIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip arrow placement="left" title="Delete">
-                <IconButton color="error" onClick={(e) => handleClick(e, row?.original?._id)}>
-                  <DeleteForeverIcon />
                 </IconButton>
               </Tooltip>
             </Box>
           )}
         />
       </Container>
+
+      <CustomeDialog open={viewDialog} setOpen={() => setViewDialog(false)} title={"View Cv"}>
+        <CVView props={cvData} />
+      </CustomeDialog>
     </>
   );
 }

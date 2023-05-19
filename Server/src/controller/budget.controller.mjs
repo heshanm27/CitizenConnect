@@ -46,6 +46,7 @@ const updateBudget = async (req, res) => {
 };
 const deleteBudget = async (req, res) => {
   const { id } = req.params;
+  console.log("deleteBudget", req.params.id);
   try {
     await BudgetService.deleteBudget(id);
     res.status(200).json({ message: "Budget deleted successfully" });

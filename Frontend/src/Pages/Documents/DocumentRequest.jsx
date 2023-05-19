@@ -273,9 +273,9 @@ export default function DocumentRequest() {
                   {error.message}
                 </Typography>
               )}
-              {/* <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={() => setAddDialog(true)}>
+              <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={() => setAddDialog(true)}>
                 {" Verify Email"}
-              </Button> */}
+              </Button>
               <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
                 {isLoading ? <CircularProgress /> : " Submit"}
               </Button>
@@ -283,7 +283,7 @@ export default function DocumentRequest() {
           </Grid>
         </Paper>
         <CustomSnackBar notify={notify} setNotify={setNotify} />
-        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Project"}>
+        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Verify Otp"}>
           <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
         </CustomeDialog>
       </Container>

@@ -2,9 +2,9 @@ import apiClient from "./axios.default";
 
 const basePath = "cv";
 
-export const getCVs = async () => {
+export const getCVs = async (id) => {
   try {
-    const reponse = await apiClient.get(`/${basePath}`);
+    const reponse = await apiClient.get(`/${basePath}/vacancy/${id}`);
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

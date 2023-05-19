@@ -18,6 +18,10 @@ import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
 import ProjectCard from "../../Components/Common/CustomCard/ProjectCard";
 import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
 import { useNavigate } from "react-router-dom";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Doughnut } from 'react-chartjs-2';
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 export default function Budgets() {
   const [open, setOpen] = useState(true);
   const [selectedData, setSelectedData] = useState(null);
@@ -76,6 +80,16 @@ export default function Budgets() {
     }
   }, [data]);
 
+  const Piedata = {
+    labels: ['Spent Budget', 'Remaining Budget'],
+    datasets: [
+      {
+        data: [selectedData?.spended_budget, selectedData?.allocated_budget-selectedData?.spended_budget],
+        backgroundColor: ['#FF6384', '#36A2EB'],
+        borderWidth: 1,
+      },
+    ],
+  };
   console.log(projectData);
   return (
     <>
@@ -111,7 +125,11 @@ export default function Budgets() {
               <Stack direction="row" spacing={2}>
                 <Typography>Allocated Budget {selectedData?.allocated_budget + " " + selectedData?.unit}</Typography>
                 <Typography>Spended Budget{selectedData?.spended_budget + " " + selectedData?.unit}</Typography>
+
               </Stack>
+              <Box sx={{width:"400px",height:"400px"}}>
+              <Doughnut data={Piedata} />
+              </Box>
             </>
           )}
 

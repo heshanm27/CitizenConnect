@@ -13,7 +13,7 @@ export const getProjects = async ({ search = "", year = "", sortBy = "createdAt"
     const projetData = await Project.find(query)
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
-      .skip((parseInt(page) - 1) * parseInt(limit));
+      .skip((parseInt(page) - 1) * parseInt(limit)).populate("year_of_allocation");
     //find count for matching products
     const totalDocCount = await Project.countDocuments(query)
       .sort({
@@ -50,6 +50,7 @@ export const createProject = async (project) => {
 
 export const deleteProject = async (id) => {
   try {
+    console.log("deleteProject", id);
     return await Project.findByIdAndDelete(id);
   } catch (error) {
     throw new CustomError(error.message);
