@@ -1,7 +1,9 @@
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectCard({ title, subDiscription, img, onClick }) {
+  const navigate =useNavigate()
   return (
     <Card elevation={3} sx={{ height: "500px", display: "flex", flexDirection: "column" }}>
       <CardActionArea onClick={onClick}>
@@ -22,7 +24,7 @@ export default function ProjectCard({ title, subDiscription, img, onClick }) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button variant="outlined" fullWidth size="small">
+          <Button variant="outlined" fullWidth size="small" onClick={()=>navigate("")}>
             View
           </Button>
         </CardActions>
