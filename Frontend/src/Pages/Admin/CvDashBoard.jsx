@@ -45,8 +45,8 @@ export default function CvDashBoard() {
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h3" sx={{ mt: 5, fontWeight: "bold" }}>
-          Live Order
+        <Typography variant="h3" sx={{ mt: 5,mb:5, fontWeight: "bold" }}>
+         Applied CVs
         </Typography>
 
         <MaterialReactTable
@@ -90,9 +90,9 @@ export default function CvDashBoard() {
         />
       </Container>
 
-      <CustomeDialog open={viewDialog} setOpen={() => setViewDialog(false)} title={"View Cv"}>
+      {/* <CustomeDialog open={viewDialog} setOpen={() => setViewDialog(false)} title={"View Cv"}>
         <CVView props={cvData} />
-      </CustomeDialog>
+      </CustomeDialog> */}
     </>
   );
 }

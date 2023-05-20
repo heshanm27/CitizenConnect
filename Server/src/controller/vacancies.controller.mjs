@@ -26,8 +26,11 @@ export const getVacancy = async (req, res) => {
 };
 export const createVacancy = async (req, res) => {
   try {
-    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
-    const revievedVacancvy = { ...req.body, thumbnail: uploadedResponse };
+    let revievedVacancvy = req.body;
+    if (req?.files?.thumbnail?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
+      revievedVacancvy = { ...req.body, thumbnail: uploadedResponse };
+    }
     const vacancy = await VacanciesService.createVacancy(revievedVacancvy);
     res.status(201).json(vacancy);
   } catch (error) {
@@ -36,8 +39,12 @@ export const createVacancy = async (req, res) => {
 };
 export const updateVacancy = async (req, res) => {
   try {
-    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
-    const revievedVacancvy = { ...req.body, thumbnail: uploadedResponse };
+
+    let revievedVacancvy = req.body;
+    if (req?.files?.thumbnail?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
+         revievedVacancvy = { ...revievedVacancvy, thumbnail: uploadedResponse };
+    }
     const vacancy = await VacanciesService.updateVacancy(req.params.id, revievedVacancvy);
     res.status(200).json(vacancy);
   } catch (error) {

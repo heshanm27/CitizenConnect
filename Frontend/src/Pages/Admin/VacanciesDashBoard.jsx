@@ -10,7 +10,7 @@ import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 import VacanciesForm from "../../Components/Form/VacanciesForm";
-import { getVacancies } from "../../Api/vacancies.api";
+import { deleteVacancy, getVacancies } from "../../Api/vacancies.api";
 import { useNavigate } from "react-router-dom";
 export default function VacanciesDashBoard() {
   const theme = useTheme();
@@ -18,6 +18,8 @@ export default function VacanciesDashBoard() {
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [editData, setEditData] = useState({});
   const [docID, setDocID] = useState("");
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -31,7 +33,7 @@ export default function VacanciesDashBoard() {
     error: deleteError,
     mutate,
   } = useMutation({
-    mutationFn: deleteBudget,
+    mutationFn: deleteVacancy,
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-vacancies"]);
       setConfirmDialog(false);
@@ -137,7 +139,10 @@ export default function VacanciesDashBoard() {
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton onClick={(e) => {
+                  setEditData(row?.original)
+                  setEditDialog(true)
+                }}>
                   <EditIcon />
                 </IconButton>
               </Tooltip>
@@ -167,6 +172,9 @@ export default function VacanciesDashBoard() {
         <CustomSnackBar notify={notify} setNotify={setNotify} />
         <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Add Vacancies"}>
           <VacanciesForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        </CustomeDialog>
+        <CustomeDialog open={editDialog} setOpen={() => setEditDialog(false)} title={"Update Vacancies"}>
+          <VacanciesForm setDialogOff={() => setEditDialog(false)} setNotify={setNotify} updateData={editData} />
         </CustomeDialog>
       </Container>
     </>

@@ -122,7 +122,7 @@ export default function News() {
                 {data?.news.length === 0 ? <NoNews /> : null}
                 {data?.news.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <ProjectCard img={"https://source.unsplash.com/random"} subDiscription={card?.short_description} title={card?.title} onClick={() => {}} />
+                    <ProjectCard img={card?.thumbnail} subDiscription={card?.short_description} title={card?.title} onClick={() => {}} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>

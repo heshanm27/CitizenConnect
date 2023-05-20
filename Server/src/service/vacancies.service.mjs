@@ -1,6 +1,6 @@
 import vacanciesModel from "../models/vacancies.model.mjs";
 import { CustomError, BadRequestError } from "../error/index.mjs";
-export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "2", page = "1" }) => {
+export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
     const query = {};
     if (search) {

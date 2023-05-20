@@ -5,7 +5,7 @@ const basePath = "vacancies";
 export const getVacancies = async (filter) => {
   try {
     const reponse = await apiClient.get(`/${basePath}`, {
-      params:filter
+      params: filter,
     });
     return reponse.data;
   } catch (error) {
@@ -35,9 +35,11 @@ export const createVacancy = async (data) => {
   }
 };
 
-export const updateVacancy = async (id, data) => {
+export const updateVacancy = async (data) => {
   try {
-    const response = await apiClient.patch(`/${basePath}/${id}`, data, {
+    const { id, ...rest } = data;
+    console.log("rest", rest);
+    const response = await apiClient.patch(`/${basePath}/${id}`, rest, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

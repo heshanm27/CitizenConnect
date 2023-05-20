@@ -55,8 +55,12 @@ export const createNews = async (req, res) => {
 
 export const updateNew = async (req, res) => {
   try {
-    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
-    const revievedNews = { ...req.body, thumbnail: uploadedResponse };
+    console.log(req.body)
+    let revievedNews = req.body;
+    if (req?.files?.thumbnail?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "vacancy");
+       revievedNews = { ...req.body, thumbnail: uploadedResponse };
+    }
     const news = await NewsService.updateNews(req.params.id, revievedNews);
     res.status(200).json(news);
   } catch (error) {

@@ -4,8 +4,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Navbar from "../../Components/Common/Navbar/Navbar";
 import Footer from "../../Components/Common/Footer/Footer";
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Pagination } from "@mui/material";
-
+import { List, ListItemButton, ListItemText, ListSubheader, Pagination } from "@mui/material";
 import { useState } from "react";
 import { VacanciesCategory } from "../../Components/Form/VacanciesForm";
 import VacanciesCard from "../../Components/Common/CustomCard/VacanciesCard";
@@ -79,7 +78,7 @@ export default function Vacancies() {
           </Typography>
         </Container>
 
-        <Container maxWidth="lg" sx={{ mt: 5 }}>
+        <Container maxWidth="lg"  sx={{ mt: 5,minHeight:"80vh" }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
               <List

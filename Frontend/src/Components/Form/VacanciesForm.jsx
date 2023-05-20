@@ -103,28 +103,29 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
   })
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    short_description: Yup.string().required("Short Disription is required"),
+    short_description: Yup.string().required("Short Discription is required"),
     closing_date: Yup.string().required("Vacancies Closing Date is required"),
-    vacanies_category: Yup.array().of(Yup.string()).min(1, "At least one vacancie type is required"),
+    category:  Yup.string().required("Vacancies Category is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
     initialValues: {
       title: updateData ? updateData.title : "",
       short_description: updateData ? updateData.short_description : "",
-      closing_date: updateData ? updateData.closing_date : "",
-      vacanies_category: updateData ? updateData.vacanies_category : [],
+      closing_date:  "",
+      category: updateData ? updateData.category : "",
     },
     validationSchema,
     onSubmit: (values) => {
       if (updateData) {
         UpdateMutate({
-          id: updateData.id,
+          id: updateData._id,
           title: values.title,
           short_description: values.short_description,
           closing_date: values.closing_date,
           description: richText,
-          thumbnail:selectedFiles.length === 0 ? null  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+          thumbnail:selectedFiles.length === 0 ? ""  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+          category: values.category,
         })
        }
       mutate({
@@ -133,15 +134,15 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
         closing_date: values.closing_date,
         description: richText,
         thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+        category: values.category,
       });
     },
   });
-  console.log("error", errors);
   return (
     <>
       <Container maxWidth="lg">
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} spacing={2}>
+          <Grid item xs={12} md={6} >
             <InputLabel required id="demo-simple-select-label">
               Vacancie Title
             </InputLabel>
@@ -172,7 +173,7 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6} spacing={2}>
+          <Grid item xs={12} md={6} >
             <InputLabel required id="demo-simple-select-label">
               Short Description
             </InputLabel>
@@ -194,8 +195,8 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
               </InputLabel>
               <FormControl fullWidth>
                 <Select
-                  name="vacanies_category"
-                  multiple
+                  name="category"
+                
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -204,22 +205,19 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
                     },
                   }}
                   displayEmpty
-                  error={Boolean(errors.vacanies_category)}
-                  value={values.vacanies_category}
+                  error={Boolean(errors.category)}
+                  value={values.category}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 >
-                  {/* <MenuItem disabled value="">
-                    <em>None</em>
-                  </MenuItem> */}
                   {VacanciesCategory.map((item) => (
                     <MenuItem key={item} value={item}>
                       {item}
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText error={Boolean(errors.vacanies_category)}>
-                  {errors.vacanies_category ? errors.vacanies_category : "Select at least one Vacanies Category"}
+                <FormHelperText error={Boolean(errors.category)}>
+                  {errors.category ? errors.category : "Select at least one Vacanies Category"}
                 </FormHelperText>
               </FormControl>
             </Box>

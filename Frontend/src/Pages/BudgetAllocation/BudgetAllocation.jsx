@@ -73,9 +73,10 @@ export default function Budgets() {
   };
   useEffect(() => {
     if (data && data.length > 0) {
+      console.log(data[0])
       setSelectedData(data[0]);
       setFilter({
-        year: data[0]?.year,
+        year: data[0]?._id,
       });
     }
   }, [data]);
@@ -118,7 +119,10 @@ export default function Budgets() {
             </Stack>
           )}
           {!isLoading && (
-            <>
+            <Stack  direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}>
               <Typography variant="h4" align="left" color="text.primary" gutterBottom>
                 {selectedData?.year} Budget Allocation
               </Typography>
@@ -130,10 +134,10 @@ export default function Budgets() {
               <Box sx={{width:"400px",height:"400px"}}>
               <Doughnut data={Piedata} />
               </Box>
-            </>
+            </Stack>
           )}
 
-          <Box sx={{ mt: 5, height: "60vh" }}>
+          <Box sx={{ mt: 5, height: "80vh" }}>
             <Typography variant="h4" align="left" color="text.primary" sx={{ my: 5 }}>
               {isLoading ? (
                 <Skeleton animation={"wave"} variant="rectangular" width={380} height={80} />
@@ -151,8 +155,7 @@ export default function Budgets() {
                   )))}
               {projectData?.projetData.length == 0 ? <NoProject /> : null}
               {projectData?.projetData.map((card) => (
-                <Grid item key={card} xs={12} sm={6} md={4}>
-                  {console.log()}
+                <Grid item key={card?._id} xs={12} sm={6} md={4}>
                   <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => navigate(`/budget/project/${card?._id}`)} />
                 </Grid>
               ))}
