@@ -11,10 +11,14 @@ import VacanciesCard from "../../Components/Common/CustomCard/VacanciesCard";
 import { pascalCase } from "change-case";
 import { useQuery } from "@tanstack/react-query";
 import { getVacancies } from "../../Api/vacancies.api";
-
+import { useTheme } from "@emotion/react";
+import Lottie from "lottie-react";
+import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
 export default function Vacancies() {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const theme = useTheme();
+  const [selectedCat, setSelectedCat] = useState("");
   const [filter, setFilter] = useState({
     limit: 12,
     order: -1,
@@ -78,7 +82,7 @@ export default function Vacancies() {
           </Typography>
         </Container>
 
-        <Container maxWidth="lg"  sx={{ mt: 5,minHeight:"80vh" }}>
+        <Container maxWidth="lg" sx={{ mt: 5, minHeight: "80vh" }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
               <List
@@ -92,14 +96,24 @@ export default function Vacancies() {
                 }
               >
                 {VacanciesCategory.map((item) => (
-                  <ListItemButton>
+                  <ListItemButton
+                    sx={{ bgcolor: selectedCat === item ? theme.palette.action.selected : "" }}
+                    key={item}
+                    onClick={() => handleCategoryChange(item)}
+                  >
                     <ListItemText primary={pascalCase(item)} />
                   </ListItemButton>
                 ))}
+                {selectedCat ? (
+                  <ListItemButton sx={{ bgcolor: theme.palette.error.main }} onClick={handleClearCategory}>
+                    <ListItemText color="red" primary={"Clear Filters"} />
+                  </ListItemButton>
+                ) : null}
               </List>
             </Grid>
             <Grid item xs={12} md={9}>
               <Grid container spacing={4}>
+              {data?.vacancies.length === 0 ? <NoVacancies /> : null}
                 {data?.vacancies?.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
                     <VacanciesCard data={card} />
@@ -115,5 +129,15 @@ export default function Vacancies() {
       </main>
       <Footer />
     </>
+  );
+}
+function NoVacancies() {
+  return (
+    <Stack sx={{ width: "100%", height: "40vh", my: 5 }} justifyContent={"center"} alignItems={"center"}>
+      <Lottie style={{ width: "50%" }} animationData={NotDataFound} loop={true} />
+      <Typography variant="h4" align="center">
+        No Vacancies to Show
+      </Typography>
+    </Stack>
   );
 }

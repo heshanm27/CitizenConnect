@@ -59,7 +59,26 @@ export const updateCertificate = async (id, data) => {
   }
 };
 
+export async function completeCertificateOrder(id,input) {
+  try {
+    const foundOrder = await Certificate.findOne({
+      _id: id,
+    }).exec();
+    if (!foundOrder) throw new BadRequestError("Order Not Found");
+    foundOrder.orderStatus = "Completed";
+    await foundOrder.save();
+     const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Your Requetsed Certificate is Ready",
+      html: `<p>Your  Can Download from herer <a href=${input.file}><button>Download</button></a></p>`,
+    };
 
+    const result = await Transpoter.sendMail(mailOptions);
+  } catch (e) {
+    throw new Error(e.message);
+  }
+ }
 export async function sendOrderRecipet(username, email,  recieptUrl) {
   try {
 

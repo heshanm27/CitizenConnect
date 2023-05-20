@@ -10,6 +10,7 @@ export const getVacancies = async (req, res) => {
       order: req.query.order,
       limit: req.query.limit,
       page: req.query.page,
+      cat: req.query.cat,
     });
     res.status(200).json(vacancies);
   } catch (error) {

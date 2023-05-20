@@ -1,10 +1,13 @@
 import vacanciesModel from "../models/vacancies.model.mjs";
 import { CustomError, BadRequestError } from "../error/index.mjs";
-export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
+export const getVacancies = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" ,cat=""}) => {
   try {
     const query = {};
     if (search) {
       query.title = { $regex: search, $options: "i" };
+    }
+    if (cat) {
+      query["category"] =cat;
     }
     const vacancies =  await vacanciesModel
       .find(query)

@@ -85,3 +85,20 @@ export const updateCertificate = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+
+export const completeCertificateOrder = async (req, res) => { 
+  try {
+    let  upOrder = req.body;
+    if (req?.files?.file?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req?.files?.file.tempFilePath, req?.files?.file?.name, "project");
+      upOrder = { ...req.body, file: uploadedResponse };
+    }
+
+    const project = await CertificateService.completeCertificateOrder(req.params.id, upOrder);
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+
+};

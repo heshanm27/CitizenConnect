@@ -10,6 +10,7 @@ const CertificateSchema = new Schema(
     address: { type: String },
     certificate_type: { type: String, required: true },
     certificate_language: { type: [String], required: true },
+    orderStatus: { type: String, default: "pending"},
     payment: {
       ispaid: { type: Boolean, default: false },
       payment_method: { type: String },
