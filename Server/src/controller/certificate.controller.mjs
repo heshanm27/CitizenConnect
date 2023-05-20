@@ -1,7 +1,7 @@
 import * as CertificateService from "../service/certification.service.mjs";
 import StripeService from "../config/stripe.config.mjs";
 import Stripe from "stripe";
-
+import uploadFile from "../util/fileUploader.mjs";
 export const getCertificates = async (req, res) => {
   try {
     const certificates = await CertificateService.getCertificates({
@@ -89,14 +89,27 @@ export const updateCertificate = async (req, res) => {
 };
 
 
-export const completeCertificateOrder = async (req, res) => { 
+export const completeOrder = async (req, res) => { 
   try {
-    let  upOrder = req.body;
-    if (req?.files?.file?.tempFilePath) {
-      const uploadedResponse = await uploadFile(req?.files?.file.tempFilePath, req?.files?.file?.name, "project");
-      upOrder = { ...req.body, file: uploadedResponse };
+    let upOrder = req.body;
+    console.log("req.files", req?.files['files[]'])
+    
+    if (!req?.files['files[]'] ) { 
+      throw new Error("No files uploaded");
     }
 
+    const urls = [];
+        const files = req?.files['files[]'];
+    for (const file of files) {
+      try {
+        const newUrl = await uploadFile(file?.tempFilePath,file?.name, "Order");
+        urls.push(newUrl);
+      }catch (error) {
+        console.log("error", error);
+        throw new Error("Error uploading files");
+      }
+    }
+    upOrder = {...upOrder, files: urls};
     const project = await CertificateService.completeCertificateOrder(req.params.id, upOrder);
     res.status(200).json(project);
   } catch (error) {

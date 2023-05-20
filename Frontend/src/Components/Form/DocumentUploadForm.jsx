@@ -19,6 +19,7 @@ import {
   import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
   import { createProject, updateProject } from "../../Api/project.api";
   import { getBudgets } from "../../Api/budget.api";
+import { completeCertificateOrder } from "../../Api/certificate.api";
   
   export const ProjectCategoryTypes = ["politics", "business", "entertainment", "sports", "technology"];
   
@@ -39,7 +40,7 @@ console.log("updaae",updateData)
     });
   
     const handleDrop = (acceptedFiles) => {
-      if (acceptedFiles.length > 1) {
+      if (acceptedFiles.length > 3) {
         setNotify({
           isOpen: true,
           message: "You can only upload 3 file",
@@ -55,7 +56,7 @@ console.log("updaae",updateData)
       setSelectedFiles(newFiles);
     };
     const { isLoading, isError, error, mutate } = useMutation({
-      mutationFn: createProject,
+      mutationFn: completeCertificateOrder,
       onSuccess: (value) => {
         setNotify({
           isOpen: true,
@@ -64,7 +65,7 @@ console.log("updaae",updateData)
           type: "success",
         });
         setDialogOff();
-        queryClient.invalidateQueries(["admin-project"]);
+        queryClient.invalidateQueries(["admin-document"]);
       },
       onError: (error) => {
         console.log(error);
@@ -88,7 +89,26 @@ console.log("updaae",updateData)
       },
       validationSchema,
       onSubmit: (values) => {
-       
+        mutate({
+          id: updateData?._id,
+          email: values.email,
+          files: selectedFiles,
+        })
+        
+      queryClient.invalidateQueries(["admin-document"]);
+        setNotify({
+          isOpen: true,
+          message: "Submit success",
+          title: "Success",
+        })
+      },
+      onError: (error) => { 
+        console.log(error)
+        setNotify({
+          isOpen: true,
+          message: error?.response?.data?.message || "Something went wrong",
+          title: "Error",
+        })
       },
     });
   
@@ -151,7 +171,8 @@ console.log("updaae",updateData)
                         </object>
                       );
                     } else {
-                      return <img key={index} src={URL.createObjectURL(file)} alt={file.name} style={{ maxWidth: "100%", maxHeight: "100%" }} loading="lazy" />;
+
+                      return <img key={index} src={URL.createObjectURL(file)} alt={file.name} style={{ maxWidth: "25%", maxHeight: "25%" }} loading="lazy" />;
                     }
                   })
                 )}

@@ -31,7 +31,7 @@ export const createCertificate = async (data) => {
     return response;
   } catch (error) {
     console.log("error certificate");
-    console.log(error)
+    console.log(error);
     throw new Error(error.response.data.message);
   }
 };
@@ -50,6 +50,21 @@ export const deleteCertificate = async (id) => {
     const response = await apiClient.delete(`/${basePath}/${id}`);
     return response.data;
   } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const completeCertificateOrder = async (data) => {
+  try {
+    const { id, ...rest } = data;
+    const response = await apiClient.post(`/${basePath}/complete/${id}`, rest, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
     throw new Error(error.response.data.message);
   }
 };

@@ -61,6 +61,7 @@ export const updateCertificate = async (id, data) => {
 
 export async function completeCertificateOrder(id,input) {
   try {
+    console.log("input",input)
     const foundOrder = await Certificate.findOne({
       _id: id,
     }).exec();
@@ -69,9 +70,12 @@ export async function completeCertificateOrder(id,input) {
     await foundOrder.save();
      const mailOptions = {
       from: process.env.EMAIL,
-      to: email,
+      to: input.email,
       subject: "Your Requetsed Certificate is Ready",
-      html: `<p>Your  Can Download from herer <a href=${input.file}><button>Download</button></a></p>`,
+      html: `<p>You can download the PDF files from the following URLs:</p>
+      <ul>
+        ${input?.files.map((url) => `<li><a href="${url}">${url}</a></li>`).join('')}
+      </ul>`,
     };
 
     const result = await Transpoter.sendMail(mailOptions);

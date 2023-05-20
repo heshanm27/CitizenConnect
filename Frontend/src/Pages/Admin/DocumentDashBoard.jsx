@@ -10,6 +10,7 @@ import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 import DocumentUploadForm from "../../Components/Form/DocumentUploadForm";
+import UploadIcon from '@mui/icons-material/Upload';
 export default function DocumentDashBoard() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-document"], queryFn: getCertificates });
   console.log(error, data, isLoading, isError);
@@ -18,6 +19,7 @@ export default function DocumentDashBoard() {
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [updateData, setUpdateData] = useState({});
   const [addDialog, setAddDialog] = useState(false);
+  
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -35,7 +37,7 @@ export default function DocumentDashBoard() {
   } = useMutation({
     mutationFn: deleteCertificate,
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-budgets"]);
+      queryClient.invalidateQueries(["admin-document"]);
       setConfirmDialog(false);
       setNotify({
         isOpen: true,
@@ -70,6 +72,22 @@ export default function DocumentDashBoard() {
         header: "Certificate Type",
         enableGlobalFilter: false,
       },
+      {
+        accessorKey: "certificate_purpose", //normal accessorKey  
+        header: "Order Status",
+        enableGlobalFilter: false,
+        Cell: ({ renderedCellValue, row }) => {
+          console.log(row?.original?.orderStatus)
+          switch (row?.original?.orderStatus) {
+            case "Paid":
+              return <Chip sx={{ m: 1 }} label="Paid" color="info" />;
+            case "Completed":
+              return <Chip sx={{ m: 1 }} label="Completed" color="success" />;
+            default:
+              return <Chip sx={{ m: 1 }} label="Pending Payment" color="warning" />;
+          }
+        },
+},
 
       {
         accessorKey: "certificate_language", //normal accessorKey
@@ -124,12 +142,12 @@ export default function DocumentDashBoard() {
           }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
-              <Tooltip arrow placement="left" title="Edit">
+              <Tooltip arrow placement="left" title="Upload Certificate">
                 <IconButton onClick={(e) => {
                   setAddDialog(true);
                   setUpdateData(row?.original);
                 }}>
-                  <EditIcon />
+                  <UploadIcon />
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Delete">
@@ -153,8 +171,8 @@ export default function DocumentDashBoard() {
           subTitle={"This action can't be undone"}
           title={"Delete"}
         />
-        <CustomeDialog open={addDialog} setOpen={()=>setAddDialog()} title={"Upload Requestd Documents"}>
-          <DocumentUploadForm updateData={updateData} />
+        <CustomeDialog open={addDialog} setOpen={()=>setAddDialog(false)} title={"Upload Requestd Documents"}>
+          <DocumentUploadForm updateData={updateData} setDialogOff={()=>setAddDialog(false)} setNotify={setNotify} />
         </CustomeDialog>
       </Container>
     </>
