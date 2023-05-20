@@ -26,9 +26,8 @@ export const getCV = async (id) => {
 };
 
 export const createCV = async (CV) => {
-  const newCV = new CVModel(CV);
   try {
-    return await CVModel.save();
+    return await CVModel.create(CV);
   } catch (error) {
     throw new CustomError(error.message);
   }

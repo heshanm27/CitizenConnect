@@ -14,7 +14,7 @@ import { deleteVacancy, getVacancies } from "../../Api/vacancies.api";
 import { useNavigate } from "react-router-dom";
 export default function VacanciesDashBoard() {
   const theme = useTheme();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
@@ -134,15 +134,17 @@ export default function VacanciesDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="View CV">
-                <IconButton color="success" onClick={(e) =>navigate(`/admin/${row?.original?._id}/cv`)}>
+                <IconButton color="success" onClick={(e) => navigate(`/admin/${row?.original?._id}/cv`)}>
                   <ArticleIcon />
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => {
-                  setEditData(row?.original)
-                  setEditDialog(true)
-                }}>
+                <IconButton
+                  onClick={(e) => {
+                    setEditData(row?.original);
+                    setEditDialog(true);
+                  }}
+                >
                   <EditIcon />
                 </IconButton>
               </Tooltip>

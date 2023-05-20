@@ -127,15 +127,17 @@ export default function VacanciesForm({ setNotify, setDialogOff, updateData }) {
           thumbnail:selectedFiles.length === 0 ? ""  : selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
           category: values.category,
         })
+      } else {
+        mutate({
+          title: values.title,
+          short_description: values.short_description,
+          closing_date: values.closing_date,
+          description: richText,
+          thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
+          category: values.category,
+        });
        }
-      mutate({
-        title: values.title,
-        short_description: values.short_description,
-        closing_date: values.closing_date,
-        description: richText,
-        thumbnail: selectedFiles.length >= 1 ? selectedFiles[0] : selectedFiles,
-        category: values.category,
-      });
+   
     },
   });
   return (

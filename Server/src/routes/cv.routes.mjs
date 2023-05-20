@@ -4,9 +4,8 @@ import { addCV, deleteCV, getCV, getCVs, updateCV } from "../controller/cv.contr
 const Router = express.Router();
 
 //default routes
-Router.route("/").post(addCV);
-Router.route("/vacancy/:id").get(getCVs);
+Router.route("/").get(getCVs).post(addCV);
 //paramterized routes
-Router.route("/:id").get(getCV).patch(updateCV).delete(deleteCV);
+Router.route("/:id").get(getCVs).patch(updateCV).delete(deleteCV);
 
 export default Router;

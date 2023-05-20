@@ -46,7 +46,7 @@ export default function VacanciesView() {
               ></div>
             </Grid>
             <Grid item xs={2} justifyContent={"end"} alignItems={"end"}>
-              <Button endIcon={<EmailIcon />} variant="contained" fullWidth onClick={() => navigate("/vacancies/:id/apply")}>
+              <Button endIcon={<EmailIcon />} variant="contained" fullWidth onClick={() => navigate(`/vacancies/${data?._id}/apply`)}>
                 Apply
               </Button>
             </Grid>

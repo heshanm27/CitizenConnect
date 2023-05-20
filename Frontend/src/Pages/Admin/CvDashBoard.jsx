@@ -4,10 +4,11 @@ import MaterialReactTable from "material-react-table";
 import { useQuery } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { getBudgets } from "../../Api/budget.api";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { getCVs } from "../../Api/cv.api";
 import { useParams } from "react-router-dom";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import CVView from "../Vacancies/CVView";
 export default function CvDashBoard() {
   const { id } = useParams();
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-cv"], queryFn: () => getCVs(id) });
@@ -82,7 +83,7 @@ export default function CvDashBoard() {
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
                 <IconButton onClick={(e) => handleClick(e, row?.original)}>
-                  <EditIcon />
+                  <RemoveRedEyeIcon />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -90,9 +91,9 @@ export default function CvDashBoard() {
         />
       </Container>
 
-      {/* <CustomeDialog open={viewDialog} setOpen={() => setViewDialog(false)} title={"View Cv"}>
-        <CVView props={cvData} />
-      </CustomeDialog> */}
+      <CustomeDialog open={viewDialog} setOpen={() => setViewDialog(false)} title={"View Cv"}>
+        <CVView  cvdata={cvData} />
+      </CustomeDialog>
     </>
   );
 }

@@ -2,7 +2,7 @@ import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia,
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ProjectCard({ title, subDiscription, img, onClick }) {
+export default function ProjectCard({ title, subDiscription, img, onClick,url }) {
   const navigate = useNavigate();
   return (
     <Card elevation={3} sx={{ height: "500px", display: "flex", flexDirection: "column" }}>
@@ -13,13 +13,11 @@ export default function ProjectCard({ title, subDiscription, img, onClick }) {
             {title}
           </Typography>
           <Typography variant="body1" textOverflow={"ellipsis"} sx={{ lineClamp: 1,overflow:"hidden",display:"-webkit-box",boxOrient:'vertical' }}>
-            {subDiscription} "asdddddddddddddddddddddddddddddd dddddddddddddddddddddddddddddddddd sdsd sdd" sd d dddddddddddddddddddsdddddddddddddddddddddddd
-            ddddddddddddddddddddddddddddddddddddddddddddddd sssssssssssssssssssssssssssssssssss
-            sssssssssssssssssssssssssssssssssssss
+            {subDiscription} 
           </Typography>
         </CardContent>
         <CardActions>
-          <Button variant="outlined" fullWidth size="small" onClick={() => navigate("")}>
+          <Button variant="outlined" fullWidth size="small" onClick={() => navigate(url)}>
             View
           </Button>
         </CardActions>

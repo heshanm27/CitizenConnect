@@ -34,6 +34,7 @@ export const getOneNews = async (id) => {
     if (!news) {
       throw new BadRequestError("News not found");
     }
+    return news;
   } catch (error) {
     throw new CustomError(error.message);
   }

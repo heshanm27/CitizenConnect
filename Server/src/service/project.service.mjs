@@ -30,7 +30,7 @@ export const getProjects = async ({ search = "", year = "", sortBy = "createdAt"
 
 export const getProject = async (id) => {
   try {
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate("year_of_allocation");
     if (!project) {
       throw new BadRequestError("Project not found");
     }

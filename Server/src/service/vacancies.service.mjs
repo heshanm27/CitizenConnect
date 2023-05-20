@@ -57,7 +57,7 @@ export const deleteVacancy = async (id) => {
 
 export const updateVacancy = async (id, vacancy) => {
   try {
-    return await vacanciesModel.findByIdAndUpdate(id, vacancy, { new: true });
+    return await vacanciesModel.findByIdAndUpdate(id, vacancy);
   } catch (error) {
     throw new CustomError(error.message);
   }

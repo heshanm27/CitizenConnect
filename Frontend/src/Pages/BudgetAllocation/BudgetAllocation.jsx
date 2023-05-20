@@ -156,7 +156,7 @@ export default function Budgets() {
               {projectData?.projetData.length == 0 ? <NoProject /> : null}
               {projectData?.projetData.map((card) => (
                 <Grid item key={card?._id} xs={12} sm={6} md={4}>
-                  <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => navigate(`/budget/project/${card?._id}`)} />
+                  <ProjectCard img={card?.thumbnail} subDiscription={card?.description} title={card?.title} onClick={() => navigate(`/budget/project/${card?._id}`)} url={`/budget/project/${card?._id}`} />
                 </Grid>
               ))}
               <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>

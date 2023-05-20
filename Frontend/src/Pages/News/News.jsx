@@ -15,8 +15,10 @@ import { pascalCase } from "change-case";
 import Lottie from "lottie-react";
 import NotDataFound from "../../Assets/lottie/97179-no-data-found.json";
 import SkeltonCard from "../../Components/Common/CustomCard/SkeltonCard";
+import { useNavigate } from "react-router-dom";
 export default function News() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [selectedCat, setSelectedCat] = useState("");
   const [page, setPage] = useState(1);
   const [notify, setNotify] = useState({
@@ -122,11 +124,11 @@ export default function News() {
                 {data?.news.length === 0 ? <NoNews /> : null}
                 {data?.news.map((card) => (
                   <Grid item key={card} xs={12} sm={6} md={4}>
-                    <ProjectCard img={card?.thumbnail} subDiscription={card?.short_description} title={card?.title} onClick={() => {}} />
+                    <ProjectCard img={card?.thumbnail} subDiscription={card?.short_description} title={card?.title} onClick={() => navigate(`/news/${card?._id}`)} url={`/news/${card?._id}`} />
                   </Grid>
                 ))}
                 <Stack direction={"row"} justifyContent={"center"} sx={{ mt: 5, width: "100%" }}>
-                  <Pagination color="primary" page={page} count={data?.total ?? 0} variant="outlined" shape="rounded" onChange={handlePageChange} />
+                  <Pagination color="primary" page={page} count={data?.total ?? 0} variant="outlined" shape="rounded" onChange={handlePageChange} o/>
                 </Stack>
               </Grid>
             </Grid>
