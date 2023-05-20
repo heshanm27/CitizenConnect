@@ -10,6 +10,7 @@ import ProjectRoute from "./project.routes.mjs";
 import UserRoute from "./user.routes.mjs";
 import VacanciesRoute from "./vacancies.routes.mjs";
 import OtpRoute from "./otp.routes.mjs";
+
 export default function routes(app) {
   const basePath = "/api/v1";
   console.log("filehome rou", process.env.CLOUDINARY_NAME);

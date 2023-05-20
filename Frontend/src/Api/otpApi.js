@@ -6,7 +6,10 @@ const basePath = "otp";
 
 export const requestOTP = async (data) => {
   try {
-    const reponse = await apiClient.post(`/${basePath}/request`, data);
+    console.log("data", data)
+    const reponse = await apiClient.post(`/${basePath}/request`, {
+      email: data,
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

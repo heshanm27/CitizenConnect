@@ -30,11 +30,13 @@ import { createCertificate } from "../../Api/certificate.api";
 import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
 import OtpForm from "../../Components/Form/OtpForm";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const LANUAGES = ["English", "Sinhala", "TAMIL"];
 
 export default function DocumentRequest() {
   const theme = useTheme();
+  const isEmailVerified = useSelector((state) => state.otpSlice.isEmailVerified);
   const { doc } = useParams();
   const [addDialog, setAddDialog] = useState(false);
   const queryClient = useQueryClient();
@@ -44,7 +46,7 @@ export default function DocumentRequest() {
     type: "error",
     title: "",
   });
-
+console.log("isEmailVerified", isEmailVerified)
   const { isLoading, isError, error, mutate } = useMutation({
     mutationFn: createCertificate,
     onSuccess: (value) => {
@@ -54,8 +56,6 @@ export default function DocumentRequest() {
         title: "Success",
         type: "success",
       });
-      // setDialogOff();
-      queryClient.invalidateQueries(["admin-budgets"]);
     },
     onError: (error) => {
       setNotify({
@@ -108,8 +108,6 @@ export default function DocumentRequest() {
       });
     },
   });
-  console.log("erros", errors);
-  console.log("values", values);
   return (
     <>
       <Navbar />
@@ -276,15 +274,15 @@ export default function DocumentRequest() {
               <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={() => setAddDialog(true)}>
                 {" Verify Email"}
               </Button>
-              <Button sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
-                {isLoading ? <CircularProgress /> : " Submit"}
+              <Button disabled={isEmailVerified ? false :true } sx={{ mt: 5 }} variant="contained" fullWidth onClick={handleSubmit}>
+                {isLoading ? <CircularProgress /> : "Order Certificate"}
               </Button>
             </Grid>
           </Grid>
         </Paper>
         <CustomSnackBar notify={notify} setNotify={setNotify} />
-        <CustomeDialog open={addDialog} setOpen={() => setAddDialog(false)} title={"Verify Otp"}>
-          <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} />
+        <CustomeDialog size={"sm"} open={addDialog} setOpen={() => setAddDialog(false)} title={"Verify Otp"}>
+          <OtpForm setDialogOff={() => setAddDialog(false)} setNotify={setNotify} email={values?.email} />
         </CustomeDialog>
       </Container>
 

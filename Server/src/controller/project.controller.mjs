@@ -31,11 +31,12 @@ export const createProject = async (req, res) => {
   try {
     console.log("file tem path", req.files);
     console.log("file tem path", req.files.thumbnail);
-
-    const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "project");
-    const project = { ...req.body, thumbnail: uploadedResponse };
+    let project = req.body;
+    if (req?.files?.thumbnail?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req.files.thumbnail.tempFilePath, req.files.thumbnail.name, "project");
+      project = { ...req.body, thumbnail: uploadedResponse };
+    }
     const newProject = await ProjectService.createProject(project);
-    console.log(uploadedResponse);
     res.status(201).json({ message: "Project created successfully", newProject });
   } catch (error) {
     res.status(409).json({ message: error.message });

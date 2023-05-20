@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const JobCvSchema = new Schema(
   {
     first_name: { type: String, required: true },
-    last_name: { type: Number, required: true },
+    last_name: { type: String, required: true },
     nic_passport: { type: String },
     email: { type: String, required: true },
     cv: { type: String, required: true },

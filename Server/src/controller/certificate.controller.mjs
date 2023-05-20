@@ -29,39 +29,43 @@ export const getCertificate = async (req, res) => {
 
 export const addCertificate = async (req, res) => {
   const certificate = req.body;
-
-//   const params = {
-//     payment_method_types: ["card"],
-//     billing_address_collection: "required",
-//     line_items: {
-//       price_data: {
-//         currency: "usd",
-//         product_data: {
-//           name: item.name,
-//         },
-//         unit_amount: Math.round(item.price * 100),
-//       },
-//     },
-//     mode: "payment",
-//     success_url: `${req.headers.origin}/user/payment/success`,
-//     cancel_url: `${req.headers.origin}/user/payment/cancel`,
-//     currency: "usd",
-//     customer_email: user.email,
-//     metadata: {
-//       order: "order",
-//       orderId: PlacedOrder.orderId,
-//     },
-//   };
-//   const session = await StripeService.checkout.sessions.create(params);
-//   res.status(200).json({
-//     url: session.url,
-//     orderId: PlacedOrder._id,
-//   });
-// console.log(certificate)
   try {
     const newCertificate = await CertificateService.createCertificate(certificate);
-    res.status(201).json(newCertificate);
+
+    const params = {
+      payment_method_types: ["card"],
+      billing_address_collection: "required",
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: `${certificate?.certificate_type?.charAt(0).toUpperCase() + certificate?.certificate_type.slice(1) } Certificate`,
+            },
+            unit_amount: Math.round(10 * 100),
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${req.headers.origin}/user/payment/success`,
+      cancel_url: `${req.headers.origin}/user/payment/cancel`,
+      currency: "usd",
+      customer_email: certificate.email,
+      metadata: {
+        order: "Certificate",
+        orderId: newCertificate?._id.toString(),
+        
+      },
+    };
+    console.log("params new certificate", newCertificate._id);
+    const session = await StripeService.checkout.sessions.create(params);
+    res.status(200).json({
+      url: session.url,
+      orderId: newCertificate._id,
+    });
   } catch (error) {
+    console.log("error", error);
     res.status(409).json({ message: error.message });
   }
 };
@@ -82,4 +86,21 @@ export const updateCertificate = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+
+export const completeCertificateOrder = async (req, res) => { 
+  try {
+    let  upOrder = req.body;
+    if (req?.files?.file?.tempFilePath) {
+      const uploadedResponse = await uploadFile(req?.files?.file.tempFilePath, req?.files?.file?.name, "project");
+      upOrder = { ...req.body, file: uploadedResponse };
+    }
+
+    const project = await CertificateService.completeCertificateOrder(req.params.id, upOrder);
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+
 };

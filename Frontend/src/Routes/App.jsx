@@ -21,6 +21,8 @@ import NewsViews from "../Pages/News/NewsViews";
 import { useSelector } from "react-redux";
 import DocumentRequest from "../Pages/Documents/DocumentRequest";
 import ProjectView from "../Pages/BudgetAllocation/ProjectView";
+import PaymentSuccess from "../Pages/Payment/Success/PaymentSuccess";
+import PaymentCancel from "../Pages/Payment/Cancle/PaymentCancel";
 
 function App() {
   const { mode } = useSelector((state) => state.modeSlice);
@@ -56,6 +58,8 @@ function App() {
           <Route path="/budget/project/:id" element={<ProjectView />} />
           <Route path="/documents" element={<Documents/>}/>
           <Route path="/documents/:doc" element={<DocumentRequest />} />
+          <Route path="/user/payment/success" element={<PaymentSuccess />} />
+          <Route path="/user/payment/cancel" element={<PaymentCancel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Paper>

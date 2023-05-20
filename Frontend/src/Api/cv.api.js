@@ -4,7 +4,11 @@ const basePath = "cv";
 
 export const getCVs = async (id) => {
   try {
-    const reponse = await apiClient.get(`/${basePath}/vacancy/${id}`);
+    const reponse = await apiClient.get(`/${basePath}/vacancy`, {
+      params: {
+        id,
+      },
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -22,7 +26,11 @@ export const getCV = async (id) => {
 
 export const createCV = async (data) => {
   try {
-    const reponse = await apiClient.post(`/${basePath}`, data);
+    const reponse = await apiClient.post(`/${basePath}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return reponse.data;
   } catch (error) {
     throw new Error(error.response.data.message);

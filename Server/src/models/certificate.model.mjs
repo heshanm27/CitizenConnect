@@ -8,9 +8,9 @@ const CertificateSchema = new Schema(
     email: { type: String, required: true },
     phone: { type: String },
     address: { type: String },
-    // number_of_copy: { type: Number, default: 1 },
     certificate_type: { type: String, required: true },
     certificate_language: { type: [String], required: true },
+    orderStatus: { type: String, default: "pending"},
     payment: {
       ispaid: { type: Boolean, default: false },
       payment_method: { type: String },

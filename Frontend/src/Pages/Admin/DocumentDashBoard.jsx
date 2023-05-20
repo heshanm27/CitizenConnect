@@ -8,12 +8,16 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { deleteCertificate, getCertificates } from "../../Api/certificate.api";
 import ConfirmDialog from "../../Components/Common/ConfirmDialog/ConfirmDialog";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
+import CustomeDialog from "../../Components/Common/CustomDialog/CustomDialog";
+import DocumentUploadForm from "../../Components/Form/DocumentUploadForm";
 export default function DocumentDashBoard() {
   const { data, error, isLoading, isError } = useQuery({ queryKey: ["admin-document"], queryFn: getCertificates });
   console.log(error, data, isLoading, isError);
   const [docID, setDocID] = useState("");
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState(false);
+  const [updateData, setUpdateData] = useState({});
+  const [addDialog, setAddDialog] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -121,7 +125,10 @@ export default function DocumentDashBoard() {
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Tooltip arrow placement="left" title="Edit">
-                <IconButton onClick={(e) => handleClick(e, row?.original?._id)}>
+                <IconButton onClick={(e) => {
+                  setAddDialog(true);
+                  setUpdateData(row?.original);
+                }}>
                   <EditIcon />
                 </IconButton>
               </Tooltip>
@@ -138,7 +145,7 @@ export default function DocumentDashBoard() {
         />
 
  <CustomSnackBar notify={notify} setNotify={setNotify} />
-<ConfirmDialog
+        <ConfirmDialog
           isOpen={() => setConfirmDialog(false)}
           loading={deleteLoading}
           onConfirm={handleDelete}
@@ -146,6 +153,9 @@ export default function DocumentDashBoard() {
           subTitle={"This action can't be undone"}
           title={"Delete"}
         />
+        <CustomeDialog open={addDialog} setOpen={()=>setAddDialog()} title={"Upload Requestd Documents"}>
+          <DocumentUploadForm updateData={updateData} />
+        </CustomeDialog>
       </Container>
     </>
   );

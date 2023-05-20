@@ -1,10 +1,17 @@
 import { CustomError, BadRequestError } from "../error/index.mjs";
 import Certificate from "../models/certificate.model.mjs";
+import NodeMailer from "nodemailer";
+
+export const Transpoter = NodeMailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "natureayure@gmail.com",
+    pass: "jtkgrcvpkpsjvuho",
+  },
+});
 
 export const getCertificates = async ({ search = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
-
-
     return await Certificate.find()
       .sort({ [sortBy]: order })
       .limit(parseInt(limit))
@@ -28,16 +35,15 @@ export const getCertificate = async (id) => {
 };
 
 export const createCertificate = async (certificate) => {
-  const newCertificate = new Certificate(certificate);
+  console.log("new certificate", certificate);
   try {
-    return await newCertificate.save();
+    return await Certificate.create(certificate);
   } catch (error) {
     throw new CustomError(error.message);
   }
 };
 
-export const deleteCertificate = async (req, res) => {
-  const { id } = req.params;
+export const deleteCertificate = async (id) => {
   try {
     return await Certificate.findByIdAndDelete(id);
   } catch (error) {
@@ -52,3 +58,55 @@ export const updateCertificate = async (id, data) => {
     throw new CustomError(error.message);
   }
 };
+
+export async function completeCertificateOrder(id,input) {
+  try {
+    const foundOrder = await Certificate.findOne({
+      _id: id,
+    }).exec();
+    if (!foundOrder) throw new BadRequestError("Order Not Found");
+    foundOrder.orderStatus = "Completed";
+    await foundOrder.save();
+     const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Your Requetsed Certificate is Ready",
+      html: `<p>Your  Can Download from herer <a href=${input.file}><button>Download</button></a></p>`,
+    };
+
+    const result = await Transpoter.sendMail(mailOptions);
+    return result;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+ 
+
+export async function changeOrderPaidStatus(id) {
+  try {
+    const foundOrder = await Certificate.findOne({
+      _id: id,
+    }).exec();
+    if (!foundOrder) throw new BadRequestError("Order Not Found");
+    foundOrder.orderStatus = "Paid";
+    await foundOrder.save();
+    return foundOrder;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+ }
+export async function sendOrderRecipet(email,recieptUrl) {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Order Recipet",
+      html: `<p>Your Digital Receipt for Order <button><a href="${recieptUrl}">View Recipt</button></a></p>`
+    };
+
+    const result = await Transpoter.sendMail(mailOptions);
+    return result;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}

@@ -10,8 +10,16 @@ import Footer from "../../Components/Common/Footer/Footer";
 import { useDropzone } from "react-dropzone";
 import CustomSnackBar from "../../Components/Common/SnackBar/SnackBar";
 import DefaultSVg from "../../Assets/undraw_optimize_image_re_3tb1.svg";
+import { useNavigate, useParams } from "react-router-dom";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { createCV } from "../../Api/cv.api";
+
 export default function ApplyVacancies() {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const {id} = useParams();
   const [richText, setRichText] = useState("");
   const dropzoneRef = useRef(null);
   const editorRef = useRef(null);
@@ -54,7 +62,7 @@ export default function ApplyVacancies() {
   };
 
   const { isLoading, isError, error, mutate } = useMutation({
-    mutationFn: createBudget,
+    mutationFn:createCV,
     onSuccess: (value) => {
       // setNotify({
       //   isOpen: true,
@@ -67,10 +75,15 @@ export default function ApplyVacancies() {
     },
   });
   const validationSchema = Yup.object().shape({
-    year: Yup.string().required("Year is required"),
-    allocated_budget: Yup.number().required("Allocated Budget is required").min(1, "Minimum value is 1"),
-    spended_budget: Yup.number().required("Spended Budgetis required").min(1, "Minimum value is 1"),
-    unit: Yup.string().required("Unit is required"),
+    first_name: Yup.string().required("First Name is required"),
+    last_name: Yup.string().required("Last Name is required"),
+    nic_passport: Yup.string()
+    .required("NIC/Passport No is required")
+    .test("len", "NIC/Passport No must be 10 or 12 characters", (val) => val && (val.length === 10 || val.length === 12)),
+    dob: Yup.string().required("Date of birth is required"),
+    address: Yup.string().required("Address is required"),
+    email: Yup.string().required("Email is required"),
+    phone: Yup.string().required("Phone is required"),
   });
 
   const { values, handleSubmit, errors, handleBlur, handleChange, setFieldValue } = useFormik({
@@ -82,17 +95,23 @@ export default function ApplyVacancies() {
       address: "",
       email: "",
       phone: "",
-      coverletter: "",
     },
     validationSchema,
     onSubmit: (values) => {
       mutate({
-        year: values.year,
-        allocated_budget: values.allocated_budget,
-        spended_budget: values.spended_budget,
-        unit: values.unit,
-        description: richText,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        nic_passport: values.nic_passport,
+        dob: values.dob,
+        address: values.address,
+        email: values.email,
+        phone: values.phone,
+        coverletter: richText,
+        cv: selectedFiles[0],
+        vacancie: id,
+
       });
+      navigate("/vacancies")
       console.log({
         year: values.year,
         allocated_budget: values.allocated_budget,
@@ -114,11 +133,11 @@ export default function ApplyVacancies() {
               label="First Name"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.first_name)}
+              value={values.first_name}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.first_name}
             />
 
             <TextField
@@ -127,25 +146,25 @@ export default function ApplyVacancies() {
               label="NIC/PASSPORT"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.nic_passport)}
+              value={values.nic_passport}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.nic_passport}
             />
 
             <TextField
               sx={{ my: 3 }}
-              name="email"
+              name="address"
               label="Address"
               fullWidth
               multiline
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.address)}
+              value={values.address}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.address}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -155,11 +174,11 @@ export default function ApplyVacancies() {
               label="Last Name"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.last_name)}
+              value={values.last_name}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.last_name}
             />
 
             <TextField
@@ -168,38 +187,39 @@ export default function ApplyVacancies() {
               label="Email"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.email)}
+              value={values.email}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.email}
             />
 
             <TextField
               sx={{ my: 3 }}
-              name="email"
+              name="phone"
               label="Phone NO"
               fullWidth
               inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
+              error={Boolean(errors.phone)}
+              value={values.phone}
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={errors.allocated_budget}
+              helperText={errors.phone}
             />
-            <TextField
-              sx={{ my: 2 }}
-              name="email"
-              label="Date of Birth"
-              fullWidth
-              multiline
-              inputProps={{ min: 1 }}
-              error={Boolean(errors.allocated_budget)}
-              value={values.allocated_budget}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={errors.allocated_budget}
-            />
+            <Box>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    value={values.dob}
+                    onChange={(date) => setFieldValue("dob", date)}
+                    renderInput={(params) => {
+                      return <TextField fullWidth {...params} name="dob" onBlur={handleBlur} />;
+                    }}
+                    disableFuture
+                    label="Enter DOB "
+                  />
+                </LocalizationProvider>
+              </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
