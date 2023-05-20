@@ -54,9 +54,11 @@ export const addCertificate = async (req, res) => {
       customer_email: certificate.email,
       metadata: {
         order: "Certificate",
-        orderId: newCertificate._id,
+        orderId: newCertificate?._id.toString(),
+        
       },
     };
+    console.log("params new certificate", newCertificate._id);
     const session = await StripeService.checkout.sessions.create(params);
     res.status(200).json({
       url: session.url,

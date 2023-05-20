@@ -75,30 +75,37 @@ export async function completeCertificateOrder(id,input) {
     };
 
     const result = await Transpoter.sendMail(mailOptions);
+    return result;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+ 
+
+export async function changeOrderPaidStatus(id) {
+  try {
+    const foundOrder = await Certificate.findOne({
+      _id: id,
+    }).exec();
+    if (!foundOrder) throw new BadRequestError("Order Not Found");
+    foundOrder.orderStatus = "Paid";
+    await foundOrder.save();
+    return foundOrder;
   } catch (e) {
     throw new Error(e.message);
   }
  }
-export async function sendOrderRecipet(username, email,  recieptUrl) {
+export async function sendOrderRecipet(email,recieptUrl) {
   try {
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Order Recipet",
+      html: `<p>Your Digital Receipt for Order <button><a href="${recieptUrl}">View Recipt</button></a></p>`
+    };
 
-    // const mailOptions = {
-    //   from: process.env.EMAIL,
-    //   to: email,
-    //   subject: "Order Recipet",
-    //   html: `<p>Your  Digital Recipt for Order <a href=${recieptUrl}><button>${otp}</button></a></p>`,
-    // };
-
-    // const result = await Transpoter.sendMail(mailOptions);
-
-
-    // const foundOrder = await Order.findOne({
-    //   _id: input.orderId,
-    // }).exec();
-    // if (!foundOrder) throw new BadRequestError("Order Not Found");
-    // foundOrder.status = "Sent";
-    // foundOrder.sentAt = new Date();
-    // await foundOrder.save();
+    const result = await Transpoter.sendMail(mailOptions);
+    return result;
   } catch (e) {
     throw new Error(e.message);
   }

@@ -20,7 +20,7 @@ export default function NewsViews() {
   return (
     <>
       <Navbar />
-      <Container sx={{ height: "80vh" }}>
+      <Container sx={{ minHeight: "100vh" }}>
         <Divider textAlign="left">
           <Typography variant="h6" sx={{ my: 5 }}>
             {data?.title}

@@ -10,7 +10,7 @@ import ProjectRoute from "./project.routes.mjs";
 import UserRoute from "./user.routes.mjs";
 import VacanciesRoute from "./vacancies.routes.mjs";
 import OtpRoute from "./otp.routes.mjs";
-import { OrderpayemntHandler } from "../controller/stripe.webhook.controller.mjs";
+
 export default function routes(app) {
   const basePath = "/api/v1";
   console.log("filehome rou", process.env.CLOUDINARY_NAME);
@@ -38,7 +38,7 @@ export default function routes(app) {
   app.use(`${basePath}/certificate`, CertificateRoute);
   app.use(`${basePath}/vacancies`, VacanciesRoute);
   app.use(`${basePath}/otp`, OtpRoute);
-    app.use(`/webhook`, OrderpayemntHandler);
+
   app.use(NotFoundMiddleware);
   app.use(ErrorHandlerMiddleware);
 }

@@ -76,10 +76,11 @@ export default function NewsDashBoard() {
         accessorKey: "news_category", //normal accessorKey
         header: "News categories",
         enableGlobalFilter: false,
-        Cell: ({ renderedCellValue, row }) => {
+        Cell: ({ renderedCellValue, row }) => row.original.news_category.map((item) => <Chip label={item}/>
+          )
           // console.log("news types",news_category);
-          return new Date(row.original.createdAt).toLocaleDateString();
-        },
+       
+      
       },
     ],
     []

@@ -3,6 +3,8 @@ import { BadRequestError, CustomError } from "../error/index.mjs";
 
 export const getProjects = async ({ search = "", year = "", sortBy = "createdAt", order = "-1", limit = "500", page = "1" }) => {
   try {
+
+    console.log(year)
     const query = {};
     if (search) {
       query.title = { $regex: search, $options: "i" };

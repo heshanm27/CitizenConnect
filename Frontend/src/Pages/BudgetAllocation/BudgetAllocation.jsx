@@ -49,7 +49,7 @@ export default function Budgets() {
     setSelectedData(data);
     setFilter((prev) => ({
       ...prev,
-      year: data.year,
+      year: data._id,
     }));
   };
   const { data, isLoading, isError } = useQuery({
@@ -134,6 +134,16 @@ export default function Budgets() {
               <Box sx={{width:"400px",height:"400px"}}>
               <Doughnut data={Piedata} />
               </Box>
+
+              <Typography>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                  selectedData?.description
+                }}
+              ></div>
+        
+              </Typography>
             </Stack>
           )}
 
